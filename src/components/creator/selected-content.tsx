@@ -80,7 +80,7 @@ export function SelectedContent({ items }: { items: SelectedContentItem[] }) {
                     />
                   </div>
                 ) : (
-                  <div className="linkedin-preview" aria-hidden={false}>
+                  <div className="linkedin-preview">
                     <div className="linkedin-preview-top">
                       <span className="eyebrow">
                         SHIVAM TANEJA / {item.platform.toUpperCase()}

@@ -121,6 +121,18 @@
   color: var(--muted-foreground);
 }
 
+.media-kit-sheet .label {
+  font-size: 11.5px;
+  letter-spacing: 0.12em;
+}
+
+@media (min-width: 768px) {
+  .media-kit-sheet {
+    /* ~A4 proportion at the kit width — leaves empty cream on short pages */
+    min-height: calc(min(980px, 100cqw) * 297 / 210);
+  }
+}
+
 @utility site-width {
   width: min(1180px, calc(100% - 96px));
   margin-inline: auto;
@@ -438,18 +450,65 @@ a.video-item:hover img {
   flex-direction: column;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 22px;
-  padding: 26px;
-  background: var(--creator-soft);
+  gap: 18px;
+  padding: 22px 24px;
+  background:
+    linear-gradient(
+      160deg,
+      color-mix(in oklab, var(--creator-soft) 88%, var(--accent) 12%) 0%,
+      var(--creator-soft) 48%,
+      color-mix(in oklab, var(--creator-soft) 92%, var(--foreground) 8%) 100%
+    );
   border: 1px solid var(--border);
   border-radius: 4px;
 }
 
-.linkedin-preview > span:last-child {
+.linkedin-preview-top {
   display: flex;
+  width: 100%;
   align-items: center;
-  gap: 8px;
-  font-size: 21px;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.linkedin-mark {
+  display: inline-flex;
+  height: 28px;
+  width: 28px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  background: #0a66c2;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: #fff;
+}
+
+.linkedin-preview-title {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
+  max-width: 28ch;
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2.4vw, 28px);
+  font-style: italic;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--foreground);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+}
+
+.linkedin-preview-cta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
 }
 
 .about-band {
