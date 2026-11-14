@@ -1,4 +1,10 @@
-import type { MediaKitData, PlatformStats } from "@/lib/media-kit";
+import type {
+  Brand,
+  BrandDeliverable,
+  MediaKitData,
+  PlatformStats,
+} from "@/lib/media-kit";
+import { MEDIA_KIT_BRAND_LIMIT } from "@/lib/media-kit";
 import { mediaKitProfile } from "@/data/media-kit";
 import {
   SHEET_TABS,
@@ -109,6 +115,101 @@ function parseTopPosts(csv: string): SelectedContentItem[] {
     }) as SelectedContentItem[];
 }
 
+function titleCasePlatform(raw: string) {
+  const value = raw.trim().toLowerCase();
+  if (value === "instagram") return "Instagram";
+  if (value === "youtube") return "YouTube";
+  if (value === "linkedin") return "LinkedIn";
+  if (value === "x" || value === "twitter") return "X";
+  if (value === "threads") return "Threads";
+  if (!value) return "";
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+function firstNonEmpty(
+  rows: Record<string, string>[],
+  key: string,
+): string | undefined {
+  for (const row of rows) {
+    const value = (row[key] || "").trim();
+    if (value) return value;
+  }
+  return undefined;
+}
+
+function brandScaleScore(rows: Record<string, string>[]) {
+  return (
+    (parseNumber(firstNonEmpty(rows, "app_downloads")) ?? 0) +
+    (parseNumber(firstNonEmpty(rows, "brand_instagram_followers")) ?? 0) +
+    (parseNumber(firstNonEmpty(rows, "brand_linkedin_followers")) ?? 0) +
+    (parseNumber(firstNonEmpty(rows, "brand_x_followers")) ?? 0) +
+    (parseNumber(firstNonEmpty(rows, "brand_youtube_subscribers")) ?? 0)
+  );
+}
+
+function parseBrands(csv: string): Brand[] {
+  const rows = csvToObjects(csv);
+  const byBrand = new Map<string, Record<string, string>[]>();
+
+  for (const row of rows) {
+    const name = (row.brand || "").trim();
+    if (!name) continue;
+    const list = byBrand.get(name) ?? [];
+    list.push(row);
+    byBrand.set(name, list);
+  }
+
+  const ranked = [...byBrand.entries()].map(([name, brandRows]) => {
+    const deliverables: BrandDeliverable[] = brandRows
+      .map((row) => {
+        const platform = titleCasePlatform(row.platform || "");
+        const type = (row.deliverable_type || "").trim();
+        const url =
+          (row.canonical_url || "").trim() ||
+          (row.link || "").trim() ||
+          undefined;
+        if (!platform && !type && !url) return null;
+        return {
+          platform: platform || "Post",
+          type,
+          url,
+          views: parseNumber(row.views) ?? undefined,
+          engagementRate: parseNumber(row.engagement_rate_pct) ?? undefined,
+        };
+      })
+      .filter(Boolean)
+      .sort((a, b) => {
+        const viewsDelta = (b!.views ?? 0) - (a!.views ?? 0);
+        if (viewsDelta !== 0) return viewsDelta;
+        return (b!.engagementRate ?? 0) - (a!.engagementRate ?? 0);
+      }) as BrandDeliverable[];
+
+    const viralityScore = deliverables.reduce(
+      (max, d) => Math.max(max, d.views ?? 0),
+      0,
+    );
+
+    return {
+      brand: {
+        name,
+        website: firstNonEmpty(brandRows, "brand_website"),
+        category: firstNonEmpty(brandRows, "brand_category"),
+        deliverables,
+      } satisfies Brand,
+      scaleScore: brandScaleScore(brandRows),
+      viralityScore,
+    };
+  });
+
+  return ranked
+    .sort((a, b) => {
+      if (b.scaleScore !== a.scaleScore) return b.scaleScore - a.scaleScore;
+      return b.viralityScore - a.viralityScore;
+    })
+    .slice(0, MEDIA_KIT_BRAND_LIMIT)
+    .map((entry) => entry.brand);
+}
+
 export async function getSelectedContent(): Promise<SelectedContentItem[]> {
   try {
     const csv = await fetchSheetCsv(SHEET_TABS.topPosts);
@@ -120,14 +221,16 @@ export async function getSelectedContent(): Promise<SelectedContentItem[]> {
 
 export async function getMediaKitData(): Promise<MediaKitData> {
   try {
-    const [metricsCsv, topPostsCsv] = await Promise.all([
+    const [metricsCsv, topPostsCsv, brandsCsv] = await Promise.all([
       fetchSheetCsv(SHEET_TABS.metrics),
       fetchSheetCsv(SHEET_TABS.topPosts),
+      fetchSheetCsv(SHEET_TABS.brands).catch(() => ""),
     ]);
 
     const rows = csvToObjects(metricsCsv);
     const latest = latestMetricsByPlatform(rows);
     const topPosts = parseTopPosts(topPostsCsv);
+    const workedWith = brandsCsv ? parseBrands(brandsCsv) : [];
 
     const platforms: PlatformStats[] = [];
     for (const id of MEDIA_KIT_PLATFORM_ORDER) {
@@ -167,7 +270,7 @@ export async function getMediaKitData(): Promise<MediaKitData> {
       email: mediaKitProfile.email,
       links: mediaKitProfile.links,
       socials: mediaKitProfile.socials,
-      workedWith: mediaKitProfile.workedWith,
+      workedWith,
       updatedAt: updatedAt || new Date().toISOString(),
       combinedAudience,
       platforms,
@@ -182,7 +285,7 @@ export async function getMediaKitData(): Promise<MediaKitData> {
       email: mediaKitProfile.email,
       links: mediaKitProfile.links,
       socials: mediaKitProfile.socials,
-      workedWith: mediaKitProfile.workedWith,
+      workedWith: [],
       updatedAt: new Date().toISOString(),
       combinedAudience: 0,
       platforms: [],

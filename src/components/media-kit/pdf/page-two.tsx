@@ -104,13 +104,70 @@ export function MediaKitPdfPageTwo({
       {brands.length > 0 ? (
         <View style={{ marginTop: 14 }} wrap={false}>
           <PdfSectionHeading n={brandsSection} title="Worked with" />
-          <Text style={styles.monoTiny}>
-            {brands.map((b) => b.name).join("  ·  ")}
-          </Text>
+          <View style={styles.brands}>
+            {brands.map((b) => (
+              <View key={b.name} style={styles.brand} wrap={false}>
+                {b.website ? (
+                  <Link
+                    src={b.website}
+                    style={[
+                      styles.brandName,
+                      {
+                        color: pdfColors.foreground,
+                        textDecoration: "none",
+                      },
+                    ]}
+                  >
+                    {pdfSafeText(b.name)}
+                  </Link>
+                ) : (
+                  <Text style={styles.brandName}>{pdfSafeText(b.name)}</Text>
+                )}
+                {b.category ? (
+                  <Text style={styles.brandCategory}>
+                    {pdfSafeText(b.category)}
+                  </Text>
+                ) : null}
+                {b.deliverables.map((d, i) => {
+                  const label = [
+                    [d.platform, d.type].filter(Boolean).join(" "),
+                    d.views != null ? `${compact(d.views)} views` : null,
+                  ]
+                    .filter(Boolean)
+                    .join(" • ");
+                  const key = `${b.name}-${d.platform}-${d.type}-${d.url ?? i}`;
+                  return d.url ? (
+                    <Link
+                      key={key}
+                      src={d.url}
+                      style={[
+                        styles.brandDeliverable,
+                        {
+                          color: pdfColors.accent,
+                          textDecoration: "none",
+                        },
+                      ]}
+                    >
+                      {pdfSafeText(label)}
+                    </Link>
+                  ) : (
+                    <Text key={key} style={styles.brandDeliverable}>
+                      {pdfSafeText(label)}
+                    </Text>
+                  );
+                })}
+              </View>
+            ))}
+          </View>
         </View>
       ) : null}
 
-      <View style={{ marginTop: topPosts.length > 0 ? 16 : 0 }} wrap={false}>
+      <View
+        style={{
+          marginTop: topPosts.length > 0 || brands.length > 0 ? 16 : 0,
+        }}
+        wrap={false}
+      >
         <PdfSectionHeading n={formatsSection} title="Ways to work together" />
         <View style={styles.formats}>
           {formats.map(([t, d], i) => (
@@ -132,8 +189,7 @@ export function MediaKitPdfPageTwo({
           <Text style={styles.label}>Let&apos;s build something</Text>
           <Link src={`mailto:${email}`} style={styles.email}>
             <Text>
-              {emailUser}@
-              <Text style={styles.emailAccent}>{emailDomain}</Text>
+              {emailUser}@<Text style={styles.emailAccent}>{emailDomain}</Text>
             </Text>
           </Link>
         </View>

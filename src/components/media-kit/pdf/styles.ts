@@ -232,6 +232,37 @@ export const pdfStyles = StyleSheet.create({
     color: pdfColors.foreground,
     textDecoration: "none",
   },
+  brands: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 6,
+  },
+  brand: {
+    width: "31.8%",
+    borderWidth: 1,
+    borderColor: pdfColors.border,
+    padding: 7,
+  },
+  brandName: {
+    fontFamily: "InstrumentSerif",
+    fontSize: 11,
+    lineHeight: 1.2,
+    color: pdfColors.foreground,
+    textDecoration: "none",
+  },
+  brandCategory: {
+    fontFamily: "JetBrainsMono",
+    fontSize: 7,
+    color: pdfColors.muted,
+    marginTop: 2,
+  },
+  brandDeliverable: {
+    fontFamily: "JetBrainsMono",
+    fontSize: 7.5,
+    color: pdfColors.accent,
+    marginTop: 3,
+    textDecoration: "none",
+  },
   formats: {
     flexDirection: "row",
     flexWrap: "wrap",

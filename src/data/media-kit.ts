@@ -17,7 +17,6 @@ export const mediaKitProfile = {
   location: "Bengaluru, IN",
   bio: "Software engineer who ships end-to-end products and documents every step. I make honest, hands-on content for developers and builders.",
   email: "business.shivamtaneja@gmail.com",
-  workedWith: [] as { name: string; logoUrl?: string; postUrl?: string }[],
   links: [
     {
       label: "shivamtaneja.com",

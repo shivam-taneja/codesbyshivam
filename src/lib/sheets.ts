@@ -4,6 +4,7 @@ const SHEET_BASE =
 export const SHEET_TABS = {
   metrics: `${SHEET_BASE}?gid=1703766040&single=true&output=csv`,
   topPosts: `${SHEET_BASE}?gid=1767961707&single=true&output=csv`,
+  brands: `${SHEET_BASE}?gid=412935886&single=true&output=csv`,
 } as const;
 
 export function parseNumber(raw: string | undefined): number | null {

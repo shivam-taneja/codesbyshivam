@@ -12,7 +12,23 @@ export type PlatformStats = {
   engagementRate?: number;
 };
 
-export type Brand = { name: string; logoUrl?: string; postUrl?: string };
+export type BrandDeliverable = {
+  platform: string;
+  type: string;
+  url?: string;
+  views?: number;
+  engagementRate?: number;
+};
+
+export type Brand = {
+  name: string;
+  website?: string;
+  category?: string;
+  deliverables: BrandDeliverable[];
+};
+
+/** How many brands to surface on the media kit UI + PDF. */
+export const MEDIA_KIT_BRAND_LIMIT = 3;
 
 export type TopPost = {
   title: string;
