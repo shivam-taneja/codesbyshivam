@@ -1,0 +1,17 @@
+# codesbyshivam
+
+Shivam Taneja is a software engineer and content creator in Bengaluru (Bangalore), India. He ships end-to-end products and documents the work. Online he is codesbyshivam. He makes honest, hands-on content for developers and builders: AI tools, engineer life, and a little humour. He consults at KPMG.
+
+codesbyshivam.com is his creator site, with selected posts and a media kit for brand partnerships. His portfolio is shivamtaneja.com. Dev humour also lives at theguyshetoldyouabout.com.
+
+## Links
+
+- Site: https://www.codesbyshivam.com/
+- Portfolio: https://www.shivamtaneja.com/
+- Media kit: https://www.codesbyshivam.com/media-kit
+- LinkedIn: https://www.linkedin.com/in/shivam-taneja/
+- Instagram: https://www.instagram.com/codesbyshivam/
+- YouTube: https://www.youtube.com/@codesbyshivam
+- X: https://x.com/codesbyshivam
+- Threads: https://www.threads.net/@codesbyshivam
+- Dev humour: https://theguyshetoldyouabout.com

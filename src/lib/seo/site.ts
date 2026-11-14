@@ -1,8 +1,8 @@
 export const siteConfig = {
   name: "codesbyshivam",
-  title: "codesbyshivam | Shivam Taneja",
+  title: "Shivam Taneja | Full Stack Developer, Bangalore",
   description:
-    "Videos on AI tools, developer life, and tech with personality by Shivam Taneja.",
+    "Shivam Taneja (codesbyshivam) is a full stack developer and content creator in Bangalore. Honest, hands-on videos on AI tools, engineer life, and tech.",
   url: "https://www.codesbyshivam.com",
   author: "Shivam Taneja",
   handle: "codesbyshivam",

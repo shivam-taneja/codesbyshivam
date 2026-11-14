@@ -4,8 +4,8 @@ import { siteConfig } from "./site";
 const ogImage = {
   url: "/og-image.jpg",
   width: 1200,
-  height: 630,
-  alt: "codesbyshivam — Shivam Taneja, developer content creator",
+  height: 640,
+  alt: "Shivam Taneja, full stack developer in Bangalore (codesbyshivam)",
 } as const;
 
 type PageSeoInput = {
@@ -80,6 +80,9 @@ export const rootMetadata: Metadata = {
   keywords: [
     "codesbyshivam",
     "Shivam Taneja",
+    "full stack developer",
+    "Bangalore",
+    "Bengaluru",
     "developer content creator",
     "AI tools",
     "build in public",
@@ -103,16 +106,22 @@ export const rootMetadata: Metadata = {
   icons: {
     icon: [
       { url: "/logo.svg", type: "image/svg+xml" },
-      { url: "/logo.png", type: "image/png", sizes: "64x64" },
+      { url: "/logo.png", type: "image/png", sizes: "256x256" },
+      {
+        url: "/favicon.ico",
+        type: "image/x-icon",
+        sizes: "16x16 32x32 48x48 64x64",
+      },
     ],
-    apple: [{ url: "/logo.png", sizes: "180x180" }],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
   },
 };
 
 export const homeMetadata = pageMetadata({
-  title: "codesbyshivam | Shivam Taneja, Developer Content Creator",
-  description:
-    "Honest, hands-on content for developers — AI tools, engineer life, and tech with personality. Explore selected posts and partner with Shivam Taneja.",
+  title: siteConfig.title,
+  description: siteConfig.description,
   path: "/",
   absoluteTitle: true,
 });
