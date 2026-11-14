@@ -5,7 +5,7 @@ const ogImage = {
   url: "/og-image.jpg",
   width: 1200,
   height: 640,
-  alt: "Shivam Taneja, full stack developer in Bangalore (codesbyshivam)",
+  alt: "codesbyshivam, Shivam Taneja, developer content creator",
 } as const;
 
 type PageSeoInput = {
@@ -80,9 +80,6 @@ export const rootMetadata: Metadata = {
   keywords: [
     "codesbyshivam",
     "Shivam Taneja",
-    "full stack developer",
-    "Bangalore",
-    "Bengaluru",
     "developer content creator",
     "AI tools",
     "build in public",

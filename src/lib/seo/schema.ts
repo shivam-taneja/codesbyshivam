@@ -5,13 +5,6 @@ type ProfileStats = {
   updatedAt?: string;
 };
 
-const bengaluruAddress = {
-  "@type": "PostalAddress",
-  addressLocality: "Bengaluru",
-  addressRegion: "Karnataka",
-  addressCountry: "IN",
-};
-
 export function creatorPerson(stats?: ProfileStats) {
   const person: Record<string, unknown> = {
     "@type": "Person",
@@ -19,18 +12,8 @@ export function creatorPerson(stats?: ProfileStats) {
     alternateName: siteConfig.handle,
     url: siteConfig.url,
     image: `${siteConfig.url}/logo.png`,
-    jobTitle: "Full Stack Developer and Content Creator",
+    jobTitle: "Developer Content Creator",
     description: siteConfig.description,
-    homeLocation: {
-      "@type": "Place",
-      name: "Bengaluru, Karnataka, India",
-      address: bengaluruAddress,
-    },
-    address: bengaluruAddress,
-    worksFor: {
-      "@type": "Organization",
-      name: "KPMG",
-    },
     knowsAbout: [
       "Software engineering",
       "AI tools",
