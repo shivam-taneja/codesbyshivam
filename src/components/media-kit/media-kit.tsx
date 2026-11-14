@@ -39,7 +39,7 @@ export function MediaKit({ data }: { data: MediaKitData }) {
         <PrintButton />
       </div>
 
-      <div className="mx-auto flex w-[min(980px,calc(100%-24px))] flex-col gap-8 [container-type:inline-size]">
+      <div className="mx-auto flex w-[min(980px,calc(100%-24px))] flex-col gap-8 @container">
         <article
           id="media-kit-sheet-1"
           className="media-kit-sheet sheet flex flex-col px-8 py-8 sm:px-10 sm:py-9"
