@@ -1,13 +1,23 @@
 import { Suspense } from "react";
 import { MediaKit } from "@/components/media-kit/media-kit";
 import { getMediaKitData } from "@/lib/social-sheet";
-import { mediaKitMetadata } from "@/lib/seo";
+import { JsonLd, mediaKitMetadata, mediaKitPageSchema } from "@/lib/seo";
 
 export const metadata = mediaKitMetadata;
 
 async function MediaKitContent() {
   const data = await getMediaKitData();
-  return <MediaKit data={data} />;
+  return (
+    <>
+      <JsonLd
+        data={mediaKitPageSchema({
+          combinedAudience: data.combinedAudience,
+          updatedAt: data.updatedAt,
+        })}
+      />
+      <MediaKit data={data} />
+    </>
+  );
 }
 
 export default function MediaKitPage() {

@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
 import { siteConfig } from "./site";
 
+const ogImage = {
+  url: "/og-image.jpg",
+  width: 1200,
+  height: 630,
+  alt: "codesbyshivam — Shivam Taneja, developer content creator",
+} as const;
+
 type PageSeoInput = {
   title: string;
   description?: string;
@@ -10,7 +17,7 @@ type PageSeoInput = {
   noIndex?: boolean;
 };
 
-/** Build per-route metadata. Add OG images / canonicals here over time. */
+/** Build per-route metadata with canonical + social tags. */
 export function pageMetadata({
   title,
   description = siteConfig.description,
@@ -33,21 +40,29 @@ export function pageMetadata({
       siteName: siteConfig.name,
       type: "website",
       locale: siteConfig.locale,
+      images: [ogImage],
     },
     twitter: {
       card: "summary_large_image",
       site: siteConfig.twitter,
+      creator: siteConfig.twitter,
       title,
       description,
+      images: [ogImage.url],
     },
     ...(noIndex
       ? {
           robots: {
             index: false,
-            follow: true,
+            follow: false,
           },
         }
-      : {}),
+      : {
+          robots: {
+            index: true,
+            follow: true,
+          },
+        }),
   };
 }
 
@@ -58,15 +73,32 @@ export const rootMetadata: Metadata = {
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
-  authors: [{ name: siteConfig.author }],
+  applicationName: siteConfig.name,
+  authors: [{ name: siteConfig.author, url: siteConfig.url }],
+  creator: siteConfig.author,
+  publisher: siteConfig.author,
+  keywords: [
+    "codesbyshivam",
+    "Shivam Taneja",
+    "developer content creator",
+    "AI tools",
+    "build in public",
+    "tech YouTuber",
+    "developer Instagram",
+    "brand partnerships",
+  ],
+  category: "technology",
   openGraph: {
     siteName: siteConfig.name,
     type: "website",
     locale: siteConfig.locale,
+    images: [ogImage],
   },
   twitter: {
     card: "summary_large_image",
     site: siteConfig.twitter,
+    creator: siteConfig.twitter,
+    images: [ogImage.url],
   },
   icons: {
     icon: [
@@ -80,19 +112,23 @@ export const rootMetadata: Metadata = {
 export const homeMetadata = pageMetadata({
   title: "codesbyshivam | Shivam Taneja, Developer Content Creator",
   description:
-    "Videos on AI tools, developer life, and tech with personality. Explore content by Shivam Taneja and get in touch for brand partnerships.",
+    "Honest, hands-on content for developers — AI tools, engineer life, and tech with personality. Explore selected posts and partner with Shivam Taneja.",
   path: "/",
   absoluteTitle: true,
 });
 
 export const mediaKitMetadata = pageMetadata({
-  title: "Media kit",
-  description: "Media kit for Shivam Taneja / codesbyshivam.",
+  title: "Media Kit — Brand Partnerships",
+  description:
+    "Audience, platforms, top posts, and collaboration formats for brands working with Shivam Taneja / codesbyshivam.",
   path: "/media-kit",
 });
 
-export const notFoundMetadata = pageMetadata({
+export const notFoundMetadata: Metadata = {
   title: "Page Not Found",
-  path: "/404",
-  noIndex: true,
-});
+  description: "This page does not exist on codesbyshivam.",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};

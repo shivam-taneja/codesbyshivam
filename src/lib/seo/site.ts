@@ -11,6 +11,7 @@ export const siteConfig = {
   links: {
     portfolio: "https://www.shivamtaneja.com/",
     socials: "https://www.shivamtaneja.com/socials",
+    linkedin: "https://www.linkedin.com/in/shivam-taneja/",
     instagram: "https://www.instagram.com/codesbyshivam/",
     youtube: "https://www.youtube.com/@codesbyshivam",
     x: "https://x.com/codesbyshivam",

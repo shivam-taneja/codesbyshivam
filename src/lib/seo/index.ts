@@ -1,5 +1,5 @@
 export { siteConfig } from "./site";
-export { creatorPerson, profilePageSchema } from "./schema";
+export { creatorPerson, profilePageSchema, mediaKitPageSchema } from "./schema";
 export {
   pageMetadata,
   rootMetadata,

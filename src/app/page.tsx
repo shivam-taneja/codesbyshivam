@@ -13,7 +13,12 @@ async function HomeContent() {
 
   return (
     <>
-      <JsonLd data={profilePageSchema()} />
+      <JsonLd
+        data={profilePageSchema({
+          combinedAudience: data.combinedAudience,
+          updatedAt: data.updatedAt,
+        })}
+      />
       <CreatorSite data={data} content={content} />
     </>
   );
