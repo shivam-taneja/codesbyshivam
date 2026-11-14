@@ -1,52 +1,38 @@
-import type { MediaKitData } from "@/lib/media-kit";
+import { creatorSocials } from "@/components/creator/creator-data";
 
-/**
- * Replace with your real media-kit sample data when ready.
- * Paste the contents of `sampleMediaKitData` from the other project here.
- */
-export const sampleMediaKitData: MediaKitData = {
+const socialShortLabels: Record<string, string> = {
+  YouTube: "YT",
+  Instagram: "Insta",
+  LinkedIn: "LinkedIn",
+  X: "X",
+  Threads: "Threads",
+};
+
+const socialOrder = ["YouTube", "Instagram", "LinkedIn", "X", "Threads"];
+
+/** Identity / copy only — audience + top posts come from the published sheet. */
+export const mediaKitProfile = {
   name: { first: "Shivam", last: "Taneja" },
   handle: "codesbyshivam",
-  location: "Bengaluru, India",
-  bio: "Honest, hands-on content for developers and builders.",
+  location: "Bengaluru, IN",
+  bio: "Software engineer who ships end-to-end products and documents every step. I make honest, hands-on content for developers and builders.",
   email: "business.shivamtaneja@gmail.com",
-  updatedAt: "2026-01-01",
-  combinedAudience: 0,
-  platforms: [
+  workedWith: [] as { name: string; logoUrl?: string; postUrl?: string }[],
+  links: [
     {
-      id: "instagram",
-      name: "Instagram",
-      handle: "@codesbyshivam",
-      url: "https://www.instagram.com/codesbyshivam/",
-      followers: 0,
-      followerLabel: "followers",
-      avgViews: 0,
+      label: "shivamtaneja.com",
+      href: "https://www.shivamtaneja.com",
     },
     {
-      id: "youtube",
-      name: "YouTube",
-      handle: "@codesbyshivam",
-      url: "https://www.youtube.com/@codesbyshivam",
-      followers: 0,
-      followerLabel: "subscribers",
-      avgViews: 0,
-    },
-    {
-      id: "x",
-      name: "X",
-      handle: "@codesbyshivam",
-      url: "https://x.com/codesbyshivam",
-      followers: 0,
-      followerLabel: "followers",
-    },
-    {
-      id: "threads",
-      name: "Threads",
-      handle: "@codesbyshivam",
-      url: "https://www.threads.net/@codesbyshivam",
-      followers: 0,
-      followerLabel: "followers",
+      label: "theguyshetoldyouabout.com",
+      href: "https://theguyshetoldyouabout.com",
     },
   ],
-  links: ["https://www.shivamtaneja.com/socials"],
+  socials: socialOrder
+    .map((name) => creatorSocials.find((s) => s.name === name))
+    .filter(Boolean)
+    .map((s) => ({
+      label: socialShortLabels[s!.name] ?? s!.name,
+      href: s!.url,
+    })),
 };

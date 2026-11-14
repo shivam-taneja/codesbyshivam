@@ -12,60 +12,69 @@ import {
 } from "@/lib/media-kit";
 import { cn } from "@/lib/utils";
 import { CONTACT_URL } from "@/lib/links";
+import type { SelectedContentItem } from "@/lib/content-types";
 import { collaborations, creatorSocials } from "./creator-data";
 import { SelectedContent } from "./selected-content";
 import { Wordmark } from "./wordmark";
 
-export function CreatorSite({ data }: { data: MediaKitData }) {
+export function CreatorSite({
+  data,
+  content,
+}: {
+  data: MediaKitData;
+  content: SelectedContentItem[];
+}) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <div className="creator-site">
-      <header className="creator-nav site-width">
-        <Wordmark priority />
+      <div className="creator-nav-sticky">
+        <header className="creator-nav site-width">
+          <Wordmark priority />
 
-        <nav
-          className="hidden items-center gap-7 md:flex"
-          aria-label="Main navigation"
-        >
-          <a href="#videos">Videos</a>
-          <a href="#audience">Audience</a>
-          <a href="#collaborate">Collaborate</a>
-          <Link
-            href="/media-kit"
-            className={cn(buttonVariants({ variant: "outline" }))}
+          <nav
+            className="hidden items-center gap-7 md:flex"
+            aria-label="Main navigation"
           >
-            Media kit
-          </Link>
-        </nav>
+            <a href="#videos">Videos</a>
+            <a href="#audience">Audience</a>
+            <a href="#collaborate">Collaborate</a>
+            <Link
+              href="/media-kit"
+              className={cn(buttonVariants({ variant: "outline" }))}
+            >
+              Media kit
+            </Link>
+          </nav>
 
-        <Button
-          className="md:hidden"
-          variant="ghost"
-          size="icon"
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          {menuOpen ? <X /> : <Menu />}
-        </Button>
-      </header>
+          <Button
+            className="md:hidden"
+            variant="ghost"
+            size="icon"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            {menuOpen ? <X /> : <Menu />}
+          </Button>
+        </header>
 
-      {menuOpen ? (
-        <nav className="mobile-nav site-width" aria-label="Mobile navigation">
-          <a onClick={() => setMenuOpen(false)} href="#videos">
-            Videos
-          </a>
-          <a onClick={() => setMenuOpen(false)} href="#audience">
-            Audience
-          </a>
-          <a onClick={() => setMenuOpen(false)} href="#collaborate">
-            Collaborate
-          </a>
-          <Link href="/media-kit" onClick={() => setMenuOpen(false)}>
-            Media kit ↗
-          </Link>
-        </nav>
-      ) : null}
+        {menuOpen ? (
+          <nav className="mobile-nav site-width" aria-label="Mobile navigation">
+            <a onClick={() => setMenuOpen(false)} href="#videos">
+              Videos
+            </a>
+            <a onClick={() => setMenuOpen(false)} href="#audience">
+              Audience
+            </a>
+            <a onClick={() => setMenuOpen(false)} href="#collaborate">
+              Collaborate
+            </a>
+            <Link href="/media-kit" onClick={() => setMenuOpen(false)}>
+              Media kit ↗
+            </Link>
+          </nav>
+        ) : null}
+      </div>
 
       <main>
         <section className="creator-intro site-width">
@@ -121,7 +130,7 @@ export function CreatorSite({ data }: { data: MediaKitData }) {
         </section>
 
         <section id="videos" className="work-section site-width">
-          <SelectedContent />
+          <SelectedContent items={content} />
         </section>
 
         <section className="about-band">

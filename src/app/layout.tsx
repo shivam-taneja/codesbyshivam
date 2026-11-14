@@ -1,6 +1,7 @@
 import { Geist, Instrument_Serif, JetBrains_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { MixpanelProvider } from "@/components/providers/mixpanel-provider";
+import { ScrollToTop } from "@/components/scroll-to-top";
 import { rootMetadata } from "@/lib/seo";
 import "./globals.css";
 
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="flex min-h-full flex-col font-sans">
         <MixpanelProvider>{children}</MixpanelProvider>
+        <ScrollToTop />
         <Analytics />
       </body>
     </html>

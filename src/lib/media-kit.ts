@@ -14,6 +14,18 @@ export type PlatformStats = {
 
 export type Brand = { name: string; logoUrl?: string; postUrl?: string };
 
+export type TopPost = {
+  title: string;
+  platform: string;
+  url?: string;
+  image?: string;
+  views?: number;
+  likes?: number;
+  comments?: number;
+  engagementRate?: number;
+  rank: number;
+};
+
 export type MediaKitData = {
   name: { first: string; last: string };
   handle: string;
@@ -23,8 +35,10 @@ export type MediaKitData = {
   updatedAt: string;
   combinedAudience: number;
   platforms: PlatformStats[];
+  topPosts?: TopPost[];
   workedWith?: Brand[];
-  links: string[];
+  links: { label: string; href: string }[];
+  socials?: { label: string; href: string }[];
 };
 
 /** Views headline when avg views are at least this many times followers. */

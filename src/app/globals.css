@@ -75,7 +75,13 @@
 
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 30px;
+    scroll-padding-top: 110px;
+  }
+
+  @media (max-width: 767px) {
+    html {
+      scroll-padding-top: 85px;
+    }
   }
 
   body {
@@ -93,8 +99,8 @@
 }
 
 @utility sheet {
-  width: 210mm;
-  min-height: 297mm;
+  width: min(980px, calc(100% - 24px));
+  min-height: 100%;
   background: var(--card);
   box-shadow: 0 30px 80px -30px oklch(0.2 0.01 60 / 35%);
 }
@@ -123,7 +129,7 @@
 @media print {
   @page {
     size: A4;
-    margin: 0;
+    margin: 10mm 12mm;
   }
 
   body {
@@ -136,16 +142,24 @@
 
   html,
   body {
-    width: 210mm;
-    height: 297mm;
+    width: auto;
+    height: auto;
+    background: var(--card);
+  }
+
+  .grain {
+    background-image: none;
   }
 
   .sheet {
+    width: 100% !important;
+    max-width: none !important;
+    min-height: auto;
+    height: auto !important;
     box-shadow: none;
     margin: 0 !important;
-    height: 297mm;
-    overflow: hidden;
-    page-break-after: avoid;
+    overflow: visible !important;
+    padding: 0 !important;
   }
 
   .avoid-break {
@@ -167,13 +181,22 @@
 
 /* Creator website */
 .creator-site {
-  background: var(--creator-paper);
+  background: var(--background);
   color: var(--foreground);
   letter-spacing: 0;
+  min-height: 100vh;
 }
 
 .creator-site * {
   letter-spacing: 0;
+}
+
+.creator-nav-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--background);
+  border-bottom: 1px solid var(--border);
 }
 
 .creator-nav {
@@ -181,7 +204,6 @@
   align-items: center;
   justify-content: space-between;
   height: 100px;
-  border-bottom: 1px solid var(--border);
 }
 
 .wordmark {
@@ -591,7 +613,6 @@ a.video-item:hover img {
   display: grid;
   gap: 15px;
   padding-block: 20px;
-  border-bottom: 1px solid var(--border);
   font-size: 14px;
 }
 
