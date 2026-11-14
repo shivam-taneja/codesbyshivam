@@ -1,9 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { SectionViewTracker } from "@/components/analytics/section-view-tracker";
+import {
+  TrackedAnchor,
+  TrackedLink,
+} from "@/components/analytics/tracked-link";
 import {
   compact,
   formatMonth,
@@ -12,6 +16,7 @@ import {
 } from "@/lib/media-kit";
 import { cn } from "@/lib/utils";
 import { CONTACT_URL } from "@/lib/links";
+import { track } from "@/lib/analytics";
 import type { SelectedContentItem } from "@/lib/content-types";
 import { collaborations, creatorSocials } from "./creator-data";
 import { SelectedContent } from "./selected-content";
@@ -28,23 +33,56 @@ export function CreatorSite({
 
   return (
     <div className="creator-site">
+      <SectionViewTracker />
       <div className="creator-nav-sticky">
         <header className="creator-nav site-width">
-          <Wordmark priority />
+          <Wordmark priority location="home_nav" />
 
           <nav
             className="hidden items-center gap-7 md:flex"
             aria-label="Main navigation"
           >
-            <a href="#videos">Videos</a>
-            <a href="#audience">Audience</a>
-            <a href="#collaborate">Collaborate</a>
-            <Link
+            <TrackedAnchor
+              href="#videos"
+              event="navClicked"
+              eventProps={{
+                label: "Videos",
+                target: "#videos",
+                location: "desktop_nav",
+              }}
+            >
+              Videos
+            </TrackedAnchor>
+            <TrackedAnchor
+              href="#audience"
+              event="navClicked"
+              eventProps={{
+                label: "Audience",
+                target: "#audience",
+                location: "desktop_nav",
+              }}
+            >
+              Audience
+            </TrackedAnchor>
+            <TrackedAnchor
+              href="#collaborate"
+              event="navClicked"
+              eventProps={{
+                label: "Collaborate",
+                target: "#collaborate",
+                location: "desktop_nav",
+              }}
+            >
+              Collaborate
+            </TrackedAnchor>
+            <TrackedLink
               href="/media-kit"
               className={cn(buttonVariants({ variant: "outline" }))}
+              event="mediaKitOpened"
+              eventProps={{ location: "nav" }}
             >
               Media kit
-            </Link>
+            </TrackedLink>
           </nav>
 
           <Button
@@ -52,7 +90,11 @@ export function CreatorSite({
             variant="ghost"
             size="icon"
             aria-label={menuOpen ? "Close menu" : "Open menu"}
-            onClick={() => setMenuOpen(!menuOpen)}
+            onClick={() => {
+              const open = !menuOpen;
+              setMenuOpen(open);
+              track("mobileMenuToggled", { open });
+            }}
           >
             {menuOpen ? <X /> : <Menu />}
           </Button>
@@ -60,18 +102,50 @@ export function CreatorSite({
 
         {menuOpen ? (
           <nav className="mobile-nav site-width" aria-label="Mobile navigation">
-            <a onClick={() => setMenuOpen(false)} href="#videos">
+            <TrackedAnchor
+              href="#videos"
+              event="navClicked"
+              eventProps={{
+                label: "Videos",
+                target: "#videos",
+                location: "mobile_nav",
+              }}
+              onClick={() => setMenuOpen(false)}
+            >
               Videos
-            </a>
-            <a onClick={() => setMenuOpen(false)} href="#audience">
+            </TrackedAnchor>
+            <TrackedAnchor
+              href="#audience"
+              event="navClicked"
+              eventProps={{
+                label: "Audience",
+                target: "#audience",
+                location: "mobile_nav",
+              }}
+              onClick={() => setMenuOpen(false)}
+            >
               Audience
-            </a>
-            <a onClick={() => setMenuOpen(false)} href="#collaborate">
+            </TrackedAnchor>
+            <TrackedAnchor
+              href="#collaborate"
+              event="navClicked"
+              eventProps={{
+                label: "Collaborate",
+                target: "#collaborate",
+                location: "mobile_nav",
+              }}
+              onClick={() => setMenuOpen(false)}
+            >
               Collaborate
-            </a>
-            <Link href="/media-kit" onClick={() => setMenuOpen(false)}>
+            </TrackedAnchor>
+            <TrackedLink
+              href="/media-kit"
+              event="mediaKitOpened"
+              eventProps={{ location: "mobile_nav" }}
+              onClick={() => setMenuOpen(false)}
+            >
               Media kit ↗
-            </Link>
+            </TrackedLink>
           </nav>
         ) : null}
       </div>
@@ -100,20 +174,30 @@ export function CreatorSite({
                 little humour in your feed.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
-                <a
+                <TrackedAnchor
                   href="#collaborate"
                   className={cn(buttonVariants({ size: "lg" }))}
+                  event="heroCtaClicked"
+                  eventProps={{
+                    label: "Let’s work together",
+                    target: "#collaborate",
+                  }}
                 >
                   Let’s work together ↗
-                </a>
-                <a
+                </TrackedAnchor>
+                <TrackedAnchor
                   href="#videos"
                   className={cn(
                     buttonVariants({ variant: "ghost", size: "lg" }),
                   )}
+                  event="heroCtaClicked"
+                  eventProps={{
+                    label: "See my videos",
+                    target: "#videos",
+                  }}
                 >
                   See my videos ↓
-                </a>
+                </TrackedAnchor>
               </div>
             </div>
           </div>
@@ -121,9 +205,20 @@ export function CreatorSite({
             <span className="eyebrow">FIND ME IN YOUR FEED</span>
             <div>
               {creatorSocials.map((s) => (
-                <a key={s.name} href={s.url} target="_blank" rel="noreferrer">
+                <TrackedAnchor
+                  key={s.name}
+                  href={s.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  event="socialLinkClicked"
+                  eventProps={{
+                    platform: s.name,
+                    location: "hero",
+                    url: s.url,
+                  }}
+                >
                   {s.name} ↗
-                </a>
+                </TrackedAnchor>
               ))}
             </div>
           </div>
@@ -172,14 +267,20 @@ export function CreatorSite({
                 <br />
                 Combined counts aren’t unique people.
               </p>
-              <a
+              <TrackedAnchor
                 className="text-link"
                 href="https://www.shivamtaneja.com/socials"
                 target="_blank"
                 rel="noreferrer"
+                event="externalLinkClicked"
+                eventProps={{
+                  label: "See source stats",
+                  url: "https://www.shivamtaneja.com/socials",
+                  location: "audience",
+                }}
               >
                 See source stats ↗
-              </a>
+              </TrackedAnchor>
             </div>
           </div>
           <div className="audience-grid">
@@ -188,12 +289,17 @@ export function CreatorSite({
               .map((p) => {
                 const headline = headlineFor(p);
                 return (
-                  <a
+                  <TrackedAnchor
                     key={p.id}
                     className="audience-item"
                     href={p.url}
                     target="_blank"
                     rel="noreferrer"
+                    event="platformStatClicked"
+                    eventProps={{
+                      platform: p.name,
+                      url: p.url,
+                    }}
                   >
                     <div className="flex justify-between">
                       <span className="eyebrow">{p.name}</span>
@@ -202,7 +308,7 @@ export function CreatorSite({
                     <strong>{compact(headline.value)}</strong>
                     <span className="metric-label">{headline.label}</span>
                     <p>{headline.secondary}</p>
-                  </a>
+                  </TrackedAnchor>
                 );
               })}
           </div>
@@ -220,12 +326,14 @@ export function CreatorSite({
                 <em>A story worth sharing.</em>
               </h2>
             </div>
-            <Link
+            <TrackedLink
               href="/media-kit"
               className={cn(buttonVariants({ variant: "outline" }))}
+              event="mediaKitOpened"
+              eventProps={{ location: "collaborate" }}
             >
               View media kit ↗
-            </Link>
+            </TrackedLink>
           </div>
           <div className="collab-grid">
             {collaborations.map((c, i) => (
@@ -244,7 +352,7 @@ export function CreatorSite({
           </p>
         </section>
 
-        <section className="contact-band">
+        <section id="contact" className="contact-band">
           <div className="site-width">
             <span className="eyebrow">HAVE SOMETHING IN MIND?</span>
             <h2>
@@ -255,31 +363,47 @@ export function CreatorSite({
                 ↗
               </span>
             </h2>
-            <a
+            <TrackedAnchor
               href={CONTACT_URL}
               target="_blank"
               rel="noreferrer"
               className={cn(buttonVariants({ size: "lg" }))}
+              event="contactCtaClicked"
+              eventProps={{ location: "contact_band", url: CONTACT_URL }}
             >
               Get in touch ↗
-            </a>
-            <a className="contact-email" href={`mailto:${data.email}`}>
+            </TrackedAnchor>
+            <TrackedAnchor
+              className="contact-email"
+              href={`mailto:${data.email}`}
+              event="emailClicked"
+              eventProps={{
+                location: "contact_band",
+                email: data.email,
+              }}
+            >
               {data.email}
-            </a>
+            </TrackedAnchor>
           </div>
         </section>
       </main>
 
       <footer className="site-width creator-footer">
-        <Wordmark />
+        <Wordmark location="home_footer" />
         <span>Built by Shivam. Obviously.</span>
-        <a
+        <TrackedAnchor
           href="https://www.shivamtaneja.com/"
           target="_blank"
           rel="noreferrer"
+          event="externalLinkClicked"
+          eventProps={{
+            label: "The professional version",
+            url: "https://www.shivamtaneja.com/",
+            location: "footer",
+          }}
         >
           The professional version ↗
-        </a>
+        </TrackedAnchor>
       </footer>
     </div>
   );

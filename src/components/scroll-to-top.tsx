@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { track } from "@/lib/analytics";
 
 export function ScrollToTop() {
   const [visible, setVisible] = useState(false);
@@ -23,7 +24,10 @@ export function ScrollToTop() {
       size="icon-lg"
       aria-label="Scroll to top"
       className="fixed right-5 bottom-5 z-50 border-border bg-background/90 shadow-sm backdrop-blur-sm no-print md:right-8 md:bottom-8"
-      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      onClick={() => {
+        track("scrollToTopClicked", { path: window.location.pathname });
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }}
     >
       <ArrowUp />
     </Button>

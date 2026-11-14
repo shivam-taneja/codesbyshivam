@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { jsPDF } from "jspdf";
 import { Button } from "@/components/ui/button";
+import { track } from "@/lib/analytics";
 
 /** Screenshot libs choke on oklch — pin sRGB tokens onto the sheet for capture. */
 const SRGB_VARS: Record<string, string> = {
@@ -210,6 +211,7 @@ export function PrintButton() {
     if (sheets.length === 0 || busy) return;
 
     setBusy(true);
+    track("mediaKitPdfDownloaded", { status: "started" });
     for (const sheet of sheets) applySrgbVars(sheet);
 
     try {
@@ -280,8 +282,13 @@ export function PrintButton() {
       }
 
       pdf.save("shivam-taneja-media-kit.pdf");
+      track("mediaKitPdfDownloaded", {
+        status: "success",
+        pages: pdf.getNumberOfPages(),
+      });
     } catch (error) {
       console.error("PDF download failed", error);
+      track("mediaKitPdfDownloaded", { status: "error" });
     } finally {
       for (const sheet of sheets) clearSrgbVars(sheet);
       setBusy(false);

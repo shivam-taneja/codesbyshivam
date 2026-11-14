@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { TrackedLink } from "@/components/analytics/tracked-link";
+import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 export function ErrorPage({
@@ -19,10 +20,22 @@ export function ErrorPage({
           Let&apos;s give that another go.
         </p>
         <div className="mt-7 flex flex-wrap gap-3">
-          <Button onClick={() => reset()}>Try again</Button>
-          <Link href="/" className={cn(buttonVariants({ variant: "outline" }))}>
+          <Button
+            onClick={() => {
+              track("errorRetryClicked", {});
+              reset();
+            }}
+          >
+            Try again
+          </Button>
+          <TrackedLink
+            href="/"
+            className={cn(buttonVariants({ variant: "outline" }))}
+            event="notFoundCtaClicked"
+            eventProps={{ label: "Go home", target: "/" }}
+          >
             Go home
-          </Link>
+          </TrackedLink>
         </div>
       </section>
     </main>

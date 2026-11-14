@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { TrackedAnchor } from "@/components/analytics/tracked-link";
 import { Button } from "@/components/ui/button";
+import { track } from "@/lib/analytics";
 import {
   contentPlatforms,
   type ContentPlatform,
@@ -30,14 +32,20 @@ export function SelectedContent({ items }: { items: SelectedContentItem[] }) {
             <em>A lot to talk about.</em>
           </h2>
         </div>
-        <a
+        <TrackedAnchor
           className="text-link"
           href={platformUrl}
           target="_blank"
           rel="noreferrer"
+          event="socialLinkClicked"
+          eventProps={{
+            platform,
+            location: "hero",
+            url: platformUrl,
+          }}
         >
           {platform} ↗
-        </a>
+        </TrackedAnchor>
       </div>
 
       <div
@@ -50,7 +58,10 @@ export function SelectedContent({ items }: { items: SelectedContentItem[] }) {
             key={name}
             variant={platform === name ? "default" : "outline"}
             aria-pressed={platform === name}
-            onClick={() => setPlatform(name)}
+            onClick={() => {
+              setPlatform(name);
+              track("contentPlatformFiltered", { platform: name });
+            }}
           >
             {name}
           </Button>
@@ -112,15 +123,22 @@ export function SelectedContent({ items }: { items: SelectedContentItem[] }) {
             );
 
             return item.url ? (
-              <a
+              <TrackedAnchor
                 className="video-item"
                 key={`${item.platform}-${item.rank}-${item.title}`}
                 href={item.url}
                 target="_blank"
                 rel="noreferrer"
+                event="contentPostClicked"
+                eventProps={{
+                  platform: item.platform,
+                  title: item.title,
+                  location: "home",
+                  url: item.url,
+                }}
               >
                 {body}
-              </a>
+              </TrackedAnchor>
             ) : (
               <div
                 className="video-item"

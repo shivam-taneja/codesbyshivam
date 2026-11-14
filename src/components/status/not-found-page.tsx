@@ -1,13 +1,15 @@
-import Link from "next/link";
+"use client";
+
 import { buttonVariants } from "@/components/ui/button";
 import { Wordmark } from "@/components/creator/wordmark";
+import { TrackedLink } from "@/components/analytics/tracked-link";
 import { cn } from "@/lib/utils";
 
 export function NotFoundPage() {
   return (
     <main className="creator-site min-h-screen">
       <header className="site-width creator-nav">
-        <Wordmark />
+        <Wordmark location="not_found" />
         <span className="eyebrow">WRONG TURN. GOOD COMPANY.</span>
       </header>
 
@@ -22,15 +24,22 @@ export function NotFoundPage() {
           typo. The good stuff is back home.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
-          <Link href="/" className={cn(buttonVariants())}>
+          <TrackedLink
+            href="/"
+            className={cn(buttonVariants())}
+            event="notFoundCtaClicked"
+            eventProps={{ label: "Back to the good stuff", target: "/" }}
+          >
             ← Back to the good stuff
-          </Link>
-          <Link
+          </TrackedLink>
+          <TrackedLink
             href="/media-kit"
             className={cn(buttonVariants({ variant: "outline" }))}
+            event="mediaKitOpened"
+            eventProps={{ location: "not_found" }}
           >
             Media kit
-          </Link>
+          </TrackedLink>
         </div>
       </section>
     </main>

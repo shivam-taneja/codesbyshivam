@@ -33,14 +33,20 @@ export function initMixpanel() {
  * Typed Mixpanel track helper. Add events in `events.ts`, then:
  *
  * @example
- * track("ctaClicked", { label: "Hire me", location: "hero" })
+ * track("heroCtaClicked", { label: "Let’s work together", target: "#collaborate" })
  */
 export function track<K extends AnalyticsEventKey>(
   event: K,
   properties: AnalyticsEventProps[K],
 ) {
-  if (typeof window === "undefined" || !initialized) return;
-  mixpanel.track(analyticsEvents[event], properties);
+  if (typeof window === "undefined") return;
+  initMixpanel();
+  if (!initialized) return;
+
+  mixpanel.track(analyticsEvents[event], {
+    ...properties,
+    path: window.location.pathname,
+  });
 }
 
 export { mixpanel };

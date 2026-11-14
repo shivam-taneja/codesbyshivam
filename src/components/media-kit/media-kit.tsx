@@ -1,5 +1,8 @@
 import Image from "next/image";
-import Link from "next/link";
+import {
+  TrackedAnchor,
+  TrackedLink,
+} from "@/components/analytics/tracked-link";
 import { buttonVariants } from "@/components/ui/button";
 import {
   avgEngagement,
@@ -33,9 +36,18 @@ export function MediaKit({ data }: { data: MediaKitData }) {
   return (
     <main className="grain min-h-screen py-10 print:py-0">
       <div className="no-print media-toolbar mx-auto mb-6 flex w-[min(980px,calc(100%-24px))] items-center justify-between">
-        <Link href="/" className={cn(buttonVariants({ variant: "ghost" }))}>
+        <TrackedLink
+          href="/"
+          className={cn(buttonVariants({ variant: "ghost" }))}
+          event="mediaKitLinkClicked"
+          eventProps={{
+            label: "codesbyshivam",
+            type: "home",
+            url: "/",
+          }}
+        >
           ← codesbyshivam
-        </Link>
+        </TrackedLink>
         <PrintButton />
       </div>
 
@@ -195,15 +207,22 @@ export function MediaKit({ data }: { data: MediaKitData }) {
                   );
 
                   return post.url ? (
-                    <a
+                    <TrackedAnchor
                       key={`${post.platform}-${post.rank}-${post.title}`}
                       href={post.url}
                       target="_blank"
                       rel="noreferrer"
                       className="rounded-sm border border-border p-3 transition hover:border-foreground"
+                      event="contentPostClicked"
+                      eventProps={{
+                        platform: post.platform,
+                        title: post.title,
+                        location: "media_kit",
+                        url: post.url,
+                      }}
                     >
                       {body}
-                    </a>
+                    </TrackedAnchor>
                   ) : (
                     <div
                       key={`${post.platform}-${post.rank}-${post.title}`}
@@ -235,15 +254,21 @@ export function MediaKit({ data }: { data: MediaKitData }) {
                   );
 
                   return b.postUrl ? (
-                    <a
+                    <TrackedAnchor
                       key={b.name}
                       href={b.postUrl}
                       target="_blank"
                       rel="noreferrer"
                       className="transition hover:opacity-70"
+                      event="mediaKitLinkClicked"
+                      eventProps={{
+                        label: b.name,
+                        type: "brand",
+                        url: b.postUrl,
+                      }}
                     >
                       {inner}
-                    </a>
+                    </TrackedAnchor>
                   ) : (
                     <span key={b.name}>{inner}</span>
                   );
@@ -298,24 +323,35 @@ export function MediaKit({ data }: { data: MediaKitData }) {
           <footer className="avoid-break mt-auto flex flex-col items-start justify-between gap-4 border-t border-foreground pt-4 sm:flex-row sm:items-end">
             <div>
               <div className="label">Let&apos;s build something</div>
-              <a
+              <TrackedAnchor
                 href={`mailto:${data.email}`}
                 className="mt-1 block font-display text-[34px] leading-none"
+                event="emailClicked"
+                eventProps={{
+                  location: "media_kit_footer",
+                  email: data.email,
+                }}
               >
                 {emailUser}@<em className="text-accent">{emailDomain}</em>
-              </a>
+              </TrackedAnchor>
             </div>
             <div className="text-left font-mono text-sm leading-relaxed text-muted-foreground sm:text-right">
               {data.links.map((l) => (
-                <a
+                <TrackedAnchor
                   key={l.href}
                   href={l.href}
                   target="_blank"
                   rel="noreferrer"
                   className="block underline-offset-2 transition hover:text-foreground hover:underline"
+                  event="mediaKitLinkClicked"
+                  eventProps={{
+                    label: l.label,
+                    type: "site",
+                    url: l.href,
+                  }}
                 >
                   {l.label}
-                </a>
+                </TrackedAnchor>
               ))}
               {(data.socials?.length ?? 0) > 0 ? (
                 <div className="mt-2 flex flex-wrap items-center gap-x-1.5 sm:justify-end">
@@ -325,14 +361,20 @@ export function MediaKit({ data }: { data: MediaKitData }) {
                       className="inline-flex items-center gap-x-1.5"
                     >
                       {i > 0 ? <span aria-hidden="true">•</span> : null}
-                      <a
+                      <TrackedAnchor
                         href={s.href}
                         target="_blank"
                         rel="noreferrer"
                         className="underline-offset-2 transition hover:text-foreground hover:underline"
+                        event="socialLinkClicked"
+                        eventProps={{
+                          platform: s.label,
+                          location: "media_kit_footer",
+                          url: s.href,
+                        }}
                       >
                         {s.label}
-                      </a>
+                      </TrackedAnchor>
                     </span>
                   ))}
                 </div>
