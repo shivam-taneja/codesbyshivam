@@ -43,15 +43,15 @@ export function MediaKitPdfDocument({ data }: { data: MediaKitData }) {
         platforms={platforms}
         totalViews={totalViews}
         avgEngagement={er}
-        topPosts={topPosts}
-        brands={brands}
-        postsSection={postsSection}
-        brandsSection={brandsSection}
       />
       <MediaKitPdfPageTwo
         year={year}
         location={data.location}
         updated={updated}
+        topPosts={topPosts}
+        brands={brands}
+        postsSection={postsSection}
+        brandsSection={brandsSection}
         formatsSection={formatsSection}
         email={data.email}
         links={data.links}

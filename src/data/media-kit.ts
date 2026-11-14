@@ -27,6 +27,10 @@ export const mediaKitProfile = {
       label: "theguyshetoldyouabout.com",
       href: "https://theguyshetoldyouabout.com",
     },
+    {
+      label: "codesbyshivam.com",
+      href: "https://www.codesbyshivam.com",
+    },
   ],
   socials: socialOrder
     .map((name) => creatorSocials.find((s) => s.name === name))

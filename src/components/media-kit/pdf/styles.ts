@@ -29,6 +29,11 @@ export function ensurePdfFonts() {
     family: "JetBrainsMono",
     src: "https://cdn.jsdelivr.net/fontsource/fonts/jetbrains-mono@5.2.5/latin-400-normal.ttf",
   });
+  // PDF can't embed color emoji fonts — react-pdf swaps glyphs for Twemoji PNGs.
+  Font.registerEmojiSource({
+    format: "png",
+    url: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/",
+  });
   fontsReady = true;
 }
 
@@ -205,62 +210,66 @@ export const pdfStyles = StyleSheet.create({
   posts: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 8,
+    gap: 6,
   },
   post: {
-    width: "31.5%",
+    width: "31.8%",
     borderWidth: 1,
     borderColor: pdfColors.border,
-    padding: 8,
+    padding: 7,
+    color: pdfColors.foreground,
+    textDecoration: "none",
   },
   postTitle: {
     fontFamily: "InstrumentSerif",
-    fontSize: 11,
-    marginTop: 4,
-    lineHeight: 1.25,
+    fontSize: 10,
+    marginTop: 3,
+    lineHeight: 1.2,
+    color: pdfColors.foreground,
+    textDecoration: "none",
   },
   formats: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 8,
-    marginBottom: 8,
+    gap: 6,
+    marginBottom: 6,
   },
   format: {
-    width: "48%",
+    width: "48.5%",
     borderWidth: 1,
     borderColor: pdfColors.foreground,
-    padding: 10,
+    padding: 8,
   },
   formatTitle: {
     fontFamily: "InstrumentSerif",
-    fontSize: 13,
-    marginTop: 4,
+    fontSize: 12,
+    marginTop: 3,
   },
   formatBody: {
-    fontSize: 8.5,
-    lineHeight: 1.35,
+    fontSize: 8,
+    lineHeight: 1.3,
     color: pdfColors.muted,
-    marginTop: 4,
+    marginTop: 3,
   },
   footnote: {
     fontFamily: "JetBrainsMono",
     fontSize: 7.5,
     color: pdfColors.muted,
-    marginBottom: 18,
+    marginBottom: 14,
   },
   footer: {
     marginTop: "auto",
     borderTopWidth: 1,
     borderTopColor: pdfColors.foreground,
-    paddingTop: 12,
+    paddingTop: 10,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-end",
   },
   email: {
     fontFamily: "InstrumentSerif",
-    fontSize: 20,
-    marginTop: 4,
+    fontSize: 18,
+    marginTop: 3,
     color: pdfColors.foreground,
     textDecoration: "none",
   },
@@ -268,6 +277,7 @@ export const pdfStyles = StyleSheet.create({
     fontFamily: "InstrumentSerif",
     fontStyle: "italic",
     color: pdfColors.accent,
+    textDecoration: "none",
   },
   footerLinks: {
     alignItems: "flex-end",
