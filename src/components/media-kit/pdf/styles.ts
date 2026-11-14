@@ -29,10 +29,14 @@ export function ensurePdfFonts() {
     family: "JetBrainsMono",
     src: "https://cdn.jsdelivr.net/fontsource/fonts/jetbrains-mono@5.2.5/latin-400-normal.ttf",
   });
-  // PDF can't embed color emoji fonts — react-pdf swaps glyphs for Twemoji PNGs.
+  // PDF can't embed color emoji fonts — react-pdf swaps glyphs for local Twemoji PNGs.
   Font.registerEmojiSource({
     format: "png",
-    url: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/",
+    builder: (code) => {
+      const origin =
+        typeof window !== "undefined" ? window.location.origin : "";
+      return `${origin}/emoji/${code}.png`;
+    },
   });
   fontsReady = true;
 }
