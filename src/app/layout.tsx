@@ -1,31 +1,36 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Instrument_Serif, JetBrains_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { MixpanelProvider } from "@/components/providers/mixpanel-provider";
+import { rootMetadata } from "@/lib/seo";
 import "./globals.css";
 
-const geistSans = Geist({
+const fontSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const fontMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "codesbyshivam",
-  description: "Portfolio of Shivam Taneja",
-};
+const fontDisplay = Instrument_Serif({
+  variable: "--font-instrument-serif",
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+});
+
+export const metadata = rootMetadata;
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${fontSans.variable} ${fontMono.variable} ${fontDisplay.variable} h-full antialiased`}
+      data-scroll-behavior="smooth"
     >
-      <body className="min-h-full flex flex-col">
+      <body className="flex min-h-full flex-col font-sans">
         <MixpanelProvider>{children}</MixpanelProvider>
         <Analytics />
       </body>
