@@ -1,8 +1,8 @@
 export const siteConfig = {
   name: "codesbyshivam",
-  title: "codesbyshivam | Shivam Taneja",
+  title: "codesbyshivam | Shivam Taneja, Developer Content Creator",
   description:
-    "Videos on AI tools, developer life, and tech with personality by Shivam Taneja.",
+    "codesbyshivam is Shivam Taneja. Honest, hands-on developer content: AI tools, building, and tech, shared on socials, with a media kit for brand collaborations.",
   url: "https://www.codesbyshivam.com",
   author: "Shivam Taneja",
   handle: "codesbyshivam",

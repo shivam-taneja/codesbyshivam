@@ -24,6 +24,18 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  async headers() {
+    // *.vercel.app hosts (preview URLs and the project alias) should not be
+    // indexed. This is a routing header only, so pages stay static. The
+    // production alias is redirected to www separately in Vercel.
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: ".+\\.vercel\\.app" }],
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+    ];
+  },
   async rewrites() {
     return [
       {
