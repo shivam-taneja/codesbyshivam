@@ -126,11 +126,8 @@
   letter-spacing: 0.12em;
 }
 
-@media (min-width: 768px) {
-  .media-kit-sheet {
-    /* ~A4 proportion at the kit width — leaves empty cream on short pages */
-    min-height: calc(min(980px, 100cqw) * 297 / 210);
-  }
+.media-kit-sheet {
+  width: min(980px, calc(100% - 24px));
 }
 
 @utility site-width {
