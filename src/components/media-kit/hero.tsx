@@ -22,14 +22,19 @@ export function MediaKitHero({
   return (
     <section className="grid grid-cols-1 gap-8 pt-8 sm:gap-10 sm:pt-10 lg:grid-cols-[1.4fr_1fr]">
       <div>
-        <p className="font-mono text-sm text-accent">&lt;{handle} /&gt;</p>
+        <div className="font-mono text-sm text-accent">&lt;{handle} /&gt;</div>
         <h1 className="mt-3 font-display text-[56px] leading-[0.88] tracking-tight sm:text-[76px] md:text-[88px]">
           {firstName}
           <br />
           <em className="text-accent">{lastName}</em>
         </h1>
         <p className="mt-6 max-w-[40ch] text-[17px] leading-relaxed text-muted-foreground sm:text-[18px]">
-          {bio}
+          {bio} Codes by Shivam is Shivam Taneja’s social media and content
+          creator brand for developer content, AI tools, building, and tech. I
+          post as @codesbyshivam on X, YouTube, and Instagram: hands-on tool
+          demos, build in public updates, developer stories, and a little
+          humour. This page is the media kit for that work, with audience,
+          platforms, top posts, and collaboration formats.
         </p>
       </div>
 
