@@ -12,7 +12,7 @@ export const pillars = [
   [
     "03",
     "Engineer life",
-    "Consulting at KPMG, hackathons, mentoring, judging.",
+    "Hackathons, mentoring, and judging.",
   ],
   [
     "04",

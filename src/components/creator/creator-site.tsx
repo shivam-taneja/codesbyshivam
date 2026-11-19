@@ -163,15 +163,17 @@ export function CreatorSite({
             codesbyshivam<span className="text-accent">.</span>
           </h1>
           <div className="intro-bottom">
-            <p>
+            <div className="intro-tagline">
               Code. Content.
               <br />A little <em>personality.</em>
-            </p>
+            </div>
             <div className="intro-description">
               <p>
-                Hey, I’m Shivam Taneja. I make honest, hands-on content for
-                developers and builders. Think AI tools, developer life, and a
-                little humour in your feed.
+                Hey, I’m Shivam Taneja. Codes by Shivam is my social media and
+                content creator brand for developer content, AI tools, building,
+                and tech. I post as @codesbyshivam on X, YouTube, and Instagram:
+                hands-on tool demos, build in public updates, developer stories,
+                and a little humour.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
                 <TrackedAnchor

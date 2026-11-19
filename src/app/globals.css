@@ -268,7 +268,7 @@
   margin-top: 27px;
 }
 
-.intro-bottom > p {
+.intro-tagline {
   font-size: 42px;
   line-height: 1.15;
 }
@@ -681,7 +681,7 @@ a.video-item:hover img {
     gap: 35px;
   }
 
-  .intro-bottom > p {
+  .intro-tagline {
     font-size: 36px;
   }
 
@@ -722,7 +722,7 @@ a.video-item:hover img {
     margin-top: 22px;
   }
 
-  .intro-bottom > p {
+  .intro-tagline {
     font-size: 33px;
   }
 
