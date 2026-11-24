@@ -2,7 +2,7 @@ export const creatorSocials = [
   { name: "LinkedIn", url: "https://www.linkedin.com/in/shivam-taneja/" },
   { name: "Instagram", url: "https://www.instagram.com/codesbyshivam/" },
   { name: "YouTube", url: "https://www.youtube.com/@codesbyshivam" },
-  { name: "X", url: "https://x.com/codesbyshivam" },
+  { name: "Facebook", url: "https://www.facebook.com/codesbyshivam" },
   { name: "Threads", url: "https://www.threads.net/@codesbyshivam" },
 ];
 

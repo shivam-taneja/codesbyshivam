@@ -21,10 +21,9 @@ const AUDIENCE_LABELS = new Set(["followers", "subscribers"]);
 
 const MEDIA_KIT_PLATFORM_ORDER = [
   "linkedin",
-  "x",
+  "facebook",
   "youtube",
   "instagram",
-  "threads",
 ] as const;
 
 function snapshotToPlatform(row: Record<string, string>): PlatformStats {
@@ -53,10 +52,6 @@ function snapshotToPlatform(row: Record<string, string>): PlatformStats {
   }
   if (secondaryLabel === "posts" && secondaryValue != null) {
     platform.posts = secondaryValue;
-  }
-
-  if (id === "threads") {
-    platform.show = false;
   }
 
   return platform;
@@ -122,6 +117,7 @@ function titleCasePlatform(raw: string) {
   if (value === "linkedin") return "LinkedIn";
   if (value === "x" || value === "twitter") return "X";
   if (value === "threads") return "Threads";
+  if (value === "facebook" || value === "fb") return "Facebook";
   if (!value) return "";
   return value.charAt(0).toUpperCase() + value.slice(1);
 }
@@ -142,6 +138,7 @@ function brandScaleScore(rows: Record<string, string>[]) {
     (parseNumber(firstNonEmpty(rows, "app_downloads")) ?? 0) +
     (parseNumber(firstNonEmpty(rows, "brand_instagram_followers")) ?? 0) +
     (parseNumber(firstNonEmpty(rows, "brand_linkedin_followers")) ?? 0) +
+    (parseNumber(firstNonEmpty(rows, "brand_facebook_followers")) ?? 0) +
     (parseNumber(firstNonEmpty(rows, "brand_x_followers")) ?? 0) +
     (parseNumber(firstNonEmpty(rows, "brand_youtube_subscribers")) ?? 0)
   );
@@ -253,8 +250,7 @@ export async function getMediaKitData(): Promise<MediaKitData> {
         AUDIENCE_LABELS.has(label) &&
         MEDIA_KIT_PLATFORM_ORDER.includes(
           id as (typeof MEDIA_KIT_PLATFORM_ORDER)[number],
-        ) &&
-        id !== "threads"
+        )
       ) {
         combinedAudience += value;
       }

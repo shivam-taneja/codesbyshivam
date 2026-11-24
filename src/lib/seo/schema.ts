@@ -24,7 +24,7 @@ export function creatorPerson(stats?: ProfileStats) {
       siteConfig.links.linkedin,
       siteConfig.links.instagram,
       siteConfig.links.youtube,
-      siteConfig.links.x,
+      siteConfig.links.facebook,
       siteConfig.links.threads,
       siteConfig.links.portfolio,
     ],

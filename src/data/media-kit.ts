@@ -4,11 +4,17 @@ const socialShortLabels: Record<string, string> = {
   YouTube: "YT",
   Instagram: "Insta",
   LinkedIn: "LinkedIn",
-  X: "X",
+  Facebook: "FB",
   Threads: "Threads",
 };
 
-const socialOrder = ["YouTube", "Instagram", "LinkedIn", "X", "Threads"];
+const socialOrder = [
+  "YouTube",
+  "Instagram",
+  "LinkedIn",
+  "Facebook",
+  "Threads",
+];
 
 /** Identity / copy only — audience + top posts come from the published sheet. */
 export const mediaKitProfile = {

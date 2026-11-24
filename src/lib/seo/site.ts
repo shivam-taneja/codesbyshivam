@@ -14,7 +14,7 @@ export const siteConfig = {
     linkedin: "https://www.linkedin.com/in/shivam-taneja/",
     instagram: "https://www.instagram.com/codesbyshivam/",
     youtube: "https://www.youtube.com/@codesbyshivam",
-    x: "https://x.com/codesbyshivam",
+    facebook: "https://www.facebook.com/codesbyshivam",
     threads: "https://www.threads.net/@codesbyshivam",
   },
 } as const;
