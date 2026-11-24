@@ -29,7 +29,8 @@ export function ensurePdfFonts() {
     family: "JetBrainsMono",
     src: "https://cdn.jsdelivr.net/fontsource/fonts/jetbrains-mono@5.2.5/latin-400-normal.ttf",
   });
-  // PDF can't embed color emoji fonts — react-pdf swaps glyphs for local Twemoji PNGs.
+  // Color emoji fonts can't embed in PDF — swap glyphs for local Twemoji PNGs.
+  // pdfSafeText drops any emoji whose PNG isn't in /public/emoji.
   Font.registerEmojiSource({
     format: "png",
     builder: (code) => {
