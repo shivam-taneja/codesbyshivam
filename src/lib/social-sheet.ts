@@ -203,8 +203,8 @@ function parseBrands(csv: string): Brand[] {
 
   return ranked
     .sort((a, b) => {
-      if (b.scaleScore !== a.scaleScore) return b.scaleScore - a.scaleScore;
-      return b.viralityScore - a.viralityScore;
+      if (b.viralityScore !== a.viralityScore) return b.viralityScore - a.viralityScore;
+      return b.scaleScore - a.scaleScore;
     })
     .slice(0, MEDIA_KIT_BRAND_LIMIT)
     .map((entry) => entry.brand);
