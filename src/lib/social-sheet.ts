@@ -19,12 +19,16 @@ export { contentPlatforms } from "@/lib/content-types";
 
 const AUDIENCE_LABELS = new Set(["followers", "subscribers"]);
 
+/** Platforms shown on the media kit + rolled into combined audience. */
 const MEDIA_KIT_PLATFORM_ORDER = [
   "linkedin",
   "facebook",
   "youtube",
   "instagram",
+  "threads",
 ] as const;
+
+const WINDOW_DAYS = 30;
 
 function snapshotToPlatform(row: Record<string, string>): PlatformStats {
   const id = (row.platform || "").trim().toLowerCase();
@@ -70,6 +74,153 @@ function latestMetricsByPlatform(
     }
   }
   return latest;
+}
+
+function parseSheetDate(raw: string): Date | null {
+  const value = raw.trim();
+  if (!value) return null;
+  // Sheet dates are YYYY-MM-DD
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(value);
+  if (!match) return null;
+  return new Date(
+    Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])),
+  );
+}
+
+function audienceValue(row: Record<string, string>): number | null {
+  const status = (row.status || "active").trim().toLowerCase();
+  if (status === "inactive") return null;
+  const label = (row.metric_label || "").trim().toLowerCase();
+  if (!AUDIENCE_LABELS.has(label)) return null;
+  return parseNumber(row.metric_value);
+}
+
+function secondaryViews30d(row: Record<string, string>): number | null {
+  const label = (row.secondary_label || "").trim().toLowerCase();
+  if (label !== "views (30d)") return null;
+  return parseNumber(row.secondary_value);
+}
+
+function secondaryTotalViews(row: Record<string, string>): number | null {
+  const label = (row.secondary_label || "").trim().toLowerCase();
+  if (!label.includes("total views")) return null;
+  return parseNumber(row.secondary_value);
+}
+
+/**
+ * Combined audience, 30d views, 30d avg ER, 30d audience growth %
+ * from the full metrics history.
+ */
+function computeWindowMetrics(rows: Record<string, string>[]): {
+  combinedAudience: number;
+  views30d: number;
+  avgEngagement30d?: number;
+  audienceGrowth30dPct?: number;
+  updatedAt: string;
+} {
+  const byPlatform = new Map<string, Record<string, string>[]>();
+  for (const row of rows) {
+    const id = (row.platform || "").trim().toLowerCase();
+    if (!id) continue;
+    const list = byPlatform.get(id) ?? [];
+    list.push(row);
+    byPlatform.set(id, list);
+  }
+
+  for (const list of byPlatform.values()) {
+    list.sort((a, b) => (a.date || "").localeCompare(b.date || ""));
+  }
+
+  let latestDate: Date | null = null;
+  let updatedAt = "";
+
+  for (const id of MEDIA_KIT_PLATFORM_ORDER) {
+    const list = byPlatform.get(id);
+    if (!list?.length) continue;
+    const last = list[list.length - 1];
+    const d = parseSheetDate(last.date || "");
+    if (d && (!latestDate || d > latestDate)) latestDate = d;
+    const synced = (last.synced_at || "").trim();
+    if (synced && synced > updatedAt) updatedAt = synced;
+  }
+
+  if (!latestDate) {
+    return { combinedAudience: 0, views30d: 0, updatedAt };
+  }
+
+  const windowStart = new Date(latestDate);
+  windowStart.setUTCDate(windowStart.getUTCDate() - WINDOW_DAYS);
+
+  function rowOnOrBefore(
+    list: Record<string, string>[],
+    target: Date,
+  ): Record<string, string> | null {
+    let pick: Record<string, string> | null = null;
+    for (const row of list) {
+      const d = parseSheetDate(row.date || "");
+      if (!d) continue;
+      if (d <= target) pick = row;
+      else break;
+    }
+    return pick ?? list[0] ?? null;
+  }
+
+  let combinedAudience = 0;
+  let audienceThen = 0;
+  let views30d = 0;
+  const erSamples: number[] = [];
+
+  for (const id of MEDIA_KIT_PLATFORM_ORDER) {
+    const list = byPlatform.get(id);
+    if (!list?.length) continue;
+    const nowRow = list[list.length - 1];
+    const thenRow = rowOnOrBefore(list, windowStart);
+
+    const nowAud = audienceValue(nowRow);
+    if (nowAud != null) combinedAudience += nowAud;
+    if (thenRow) {
+      const thenAud = audienceValue(thenRow);
+      if (thenAud != null) audienceThen += thenAud;
+    }
+
+    // Direct Views (30d) — IG / Threads / Facebook
+    const v30 = secondaryViews30d(nowRow);
+    if (v30 != null) views30d += v30;
+
+    // YouTube: derive 30d from cumulative Total views
+    if (id === "youtube" && thenRow) {
+      const nowTotal = secondaryTotalViews(nowRow);
+      const thenTotal = secondaryTotalViews(thenRow);
+      if (nowTotal != null && thenTotal != null && nowTotal >= thenTotal) {
+        views30d += nowTotal - thenTotal;
+      }
+    }
+
+    for (const row of list) {
+      const d = parseSheetDate(row.date || "");
+      if (!d || d < windowStart || d > latestDate) continue;
+      const er = parseNumber(row.engagement_rate_pct);
+      if (er != null) erSamples.push(er);
+    }
+  }
+
+  const avgEngagement30d = erSamples.length
+    ? erSamples.reduce((a, b) => a + b, 0) / erSamples.length
+    : undefined;
+
+  let audienceGrowth30dPct: number | undefined;
+  if (audienceThen > 0 && combinedAudience > 0) {
+    audienceGrowth30dPct =
+      ((combinedAudience - audienceThen) / audienceThen) * 100;
+  }
+
+  return {
+    combinedAudience,
+    views30d,
+    avgEngagement30d,
+    audienceGrowth30dPct,
+    updatedAt,
+  };
 }
 
 function normalizePlatform(raw: string): ContentPlatform | null {
@@ -229,34 +380,13 @@ export async function getMediaKitData(): Promise<MediaKitData> {
     const latest = latestMetricsByPlatform(rows);
     const topPosts = parseTopPosts(topPostsCsv);
     const workedWith = brandsCsv ? parseBrands(brandsCsv) : [];
+    const windowMetrics = computeWindowMetrics(rows);
 
     const platforms: PlatformStats[] = [];
     for (const id of MEDIA_KIT_PLATFORM_ORDER) {
       const row = latest.get(id);
       if (!row) continue;
       platforms.push(snapshotToPlatform(row));
-    }
-
-    let combinedAudience = 0;
-    let updatedAt = "";
-
-    for (const row of latest.values()) {
-      const status = (row.status || "active").trim().toLowerCase();
-      const label = (row.metric_label || "").trim().toLowerCase();
-      const value = parseNumber(row.metric_value);
-      const id = row.platform.trim().toLowerCase();
-      if (
-        status === "active" &&
-        value != null &&
-        AUDIENCE_LABELS.has(label) &&
-        MEDIA_KIT_PLATFORM_ORDER.includes(
-          id as (typeof MEDIA_KIT_PLATFORM_ORDER)[number],
-        )
-      ) {
-        combinedAudience += value;
-      }
-      const synced = (row.synced_at || "").trim();
-      if (synced && synced > updatedAt) updatedAt = synced;
     }
 
     return {
@@ -268,8 +398,11 @@ export async function getMediaKitData(): Promise<MediaKitData> {
       links: mediaKitProfile.links,
       socials: mediaKitProfile.socials,
       workedWith,
-      updatedAt: updatedAt || new Date().toISOString(),
-      combinedAudience,
+      updatedAt: windowMetrics.updatedAt || new Date().toISOString(),
+      combinedAudience: windowMetrics.combinedAudience,
+      views30d: windowMetrics.views30d,
+      avgEngagement30d: windowMetrics.avgEngagement30d,
+      audienceGrowth30dPct: windowMetrics.audienceGrowth30dPct,
       platforms,
       topPosts,
     };
@@ -285,6 +418,7 @@ export async function getMediaKitData(): Promise<MediaKitData> {
       workedWith: [],
       updatedAt: new Date().toISOString(),
       combinedAudience: 0,
+      views30d: 0,
       platforms: [],
       topPosts: [],
     };

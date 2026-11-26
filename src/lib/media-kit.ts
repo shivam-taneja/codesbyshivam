@@ -53,6 +53,12 @@ export type MediaKitData = {
   email: string;
   updatedAt: string;
   combinedAudience: number;
+  /** Views in the last ~30 days (Views (30d) + YouTube Total views diff). */
+  views30d: number;
+  /** Mean of daily engagement_rate_pct over the last ~30 days. */
+  avgEngagement30d?: number;
+  /** Combined-audience growth over the last ~30 days (percent). */
+  audienceGrowth30dPct?: number;
   platforms: PlatformStats[];
   topPosts?: TopPost[];
   workedWith?: Brand[];

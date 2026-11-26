@@ -1,14 +1,14 @@
-import { Page, Text, View } from "@react-pdf/renderer";
-import {
-  compact,
-  fmt,
-  headlineFor,
-  type PlatformStats,
-} from "@/lib/media-kit";
+import { Image, Page, Path, Svg, Text, View } from "@react-pdf/renderer";
+import { compact, fmt, headlineFor, type PlatformStats } from "@/lib/media-kit";
 import { pillars } from "../media-kit-content";
 import { PdfSectionHeading } from "./section-heading";
-import { pdfStyles as styles } from "./styles";
+import { pdfColors, pdfStyles as styles } from "./styles";
 import { pdfSafeText } from "./text";
+
+function publicSrc(path: string) {
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  return `${origin}${path}`;
+}
 
 export function MediaKitPdfPageOne({
   year,
@@ -20,8 +20,9 @@ export function MediaKitPdfPageOne({
   bio,
   combinedAudience,
   platforms,
-  totalViews,
-  avgEngagement,
+  views30d,
+  avgEngagement30d,
+  audienceGrowth30dPct,
 }: {
   year: number;
   location: string;
@@ -32,9 +33,15 @@ export function MediaKitPdfPageOne({
   bio: string;
   combinedAudience: number;
   platforms: PlatformStats[];
-  totalViews: number;
-  avgEngagement?: number;
+  views30d: number;
+  avgEngagement30d?: number;
+  audienceGrowth30dPct?: number;
 }) {
+  const showGrowth = audienceGrowth30dPct != null && audienceGrowth30dPct > 0;
+  const growthLabel = showGrowth
+    ? `+${audienceGrowth30dPct.toFixed(audienceGrowth30dPct >= 10 ? 0 : 1)}% / 30d`
+    : null;
+
   return (
     <Page size="A4" style={styles.page} wrap={false}>
       <View style={styles.header} wrap={false}>
@@ -49,37 +56,54 @@ export function MediaKitPdfPageOne({
 
       <View style={styles.hero} wrap={false}>
         <View style={styles.heroMain}>
-          <Text style={styles.handle}>&lt;{handle} /&gt;</Text>
+          <View style={styles.handleRow}>
+            {/* @react-pdf/renderer Image — not an HTML <img> */}
+            {/* eslint-disable-next-line jsx-a11y/alt-text */}
+            <Image src={publicSrc("/avatar-no-bg.png")} style={styles.avatar} />
+            <Text style={styles.handle}>&lt;{handle} /&gt;</Text>
+          </View>
           <Text style={styles.name}>{firstName}</Text>
           <Text style={styles.nameAccent}>{lastName}</Text>
           <Text style={styles.bio}>{pdfSafeText(bio)}</Text>
         </View>
+
         <View style={styles.audienceBox}>
-          <Text style={[styles.label, { color: "#f2eee699" }]}>
-            Combined audience
-          </Text>
-          <View>
+          {/* eslint-disable-next-line jsx-a11y/alt-text */}
+          <Image
+            src={publicSrc("/audience-card-bg.png")}
+            style={styles.audienceBg}
+          />
+          <View style={styles.audienceContent}>
+            <Text style={styles.audienceMeta}>Combined audience</Text>
             <Text style={styles.audienceValue}>
               {compact(combinedAudience)}
             </Text>
-            <Text style={styles.audienceMeta}>
-              followers across {platforms.length} platforms
-            </Text>
-          </View>
-          <View style={styles.audienceStats}>
-            {totalViews > 0 ? (
-              <View>
-                <Text style={styles.signal}>{compact(totalViews)}</Text>
-                <Text style={styles.audienceMeta}>total views</Text>
+
+            <View style={styles.audienceBlock}>
+              <Text style={styles.audienceMeta}>Combined views</Text>
+              <Text style={styles.audienceViewsValue}>{compact(views30d)}</Text>
+            </View>
+
+            {avgEngagement30d != null ? (
+              <View style={styles.audienceDivider}>
+                <Text style={styles.audienceMeta}>Avg. engagement</Text>
+                <View style={styles.audienceErValueWrap}>
+                  <Text style={styles.audienceErValue}>
+                    {avgEngagement30d.toFixed(1)}%
+                  </Text>
+                </View>
               </View>
             ) : null}
-            {avgEngagement !== undefined ? (
-              <View>
-                <Text style={styles.signal}>{avgEngagement.toFixed(1)}%</Text>
-                <Text style={styles.audienceMeta}>avg. engagement</Text>
-              </View>
-            ) : null}
           </View>
+
+          {growthLabel ? (
+            <View style={styles.audienceGrowthBadge}>
+              <Svg width={7} height={6} viewBox="0 0 10 9">
+                <Path d="M5 0 L10 9 L0 9 Z" fill={pdfColors.accent} />
+              </Svg>
+              <Text style={styles.audienceGrowthText}>{growthLabel}</Text>
+            </View>
+          ) : null}
         </View>
       </View>
 

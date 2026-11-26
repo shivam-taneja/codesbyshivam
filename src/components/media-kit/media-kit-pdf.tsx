@@ -1,12 +1,7 @@
 "use client";
 
 import { Document } from "@react-pdf/renderer";
-import {
-  avgEngagement,
-  formatUpdatedAt,
-  updatedAtYear,
-  type MediaKitData,
-} from "@/lib/media-kit";
+import { formatUpdatedAt, updatedAtYear, type MediaKitData } from "@/lib/media-kit";
 import { MediaKitPdfPageOne } from "./pdf/page-one";
 import { MediaKitPdfPageTwo } from "./pdf/page-two";
 import { ensurePdfFonts } from "./pdf/styles";
@@ -15,8 +10,6 @@ export function MediaKitPdfDocument({ data }: { data: MediaKitData }) {
   ensurePdfFonts();
 
   const platforms = data.platforms.filter((p) => p.show !== false);
-  const er = avgEngagement(platforms);
-  const totalViews = platforms.reduce((s, p) => s + (p.totalViews ?? 0), 0);
   const updated = formatUpdatedAt(data.updatedAt);
   const year = updatedAtYear(data.updatedAt);
   const topPosts = data.topPosts ?? [];
@@ -46,8 +39,9 @@ export function MediaKitPdfDocument({ data }: { data: MediaKitData }) {
         bio={data.bio}
         combinedAudience={data.combinedAudience}
         platforms={platforms}
-        totalViews={totalViews}
-        avgEngagement={er}
+        views30d={data.views30d}
+        avgEngagement30d={data.avgEngagement30d}
+        audienceGrowth30dPct={data.audienceGrowth30dPct}
       />
       <MediaKitPdfPageTwo
         year={year}

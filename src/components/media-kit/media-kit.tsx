@@ -1,9 +1,4 @@
-import {
-  avgEngagement,
-  formatUpdatedAt,
-  updatedAtYear,
-  type MediaKitData,
-} from "@/lib/media-kit";
+import { formatUpdatedAt, updatedAtYear, type MediaKitData } from "@/lib/media-kit";
 import { MediaKitBrands } from "./brands";
 import { MediaKitFooter } from "./footer";
 import { MediaKitFormats } from "./formats";
@@ -16,8 +11,6 @@ import { MediaKitTopPosts } from "./top-posts";
 
 export function MediaKit({ data }: { data: MediaKitData }) {
   const platforms = data.platforms.filter((p) => p.show !== false);
-  const er = avgEngagement(platforms);
-  const totalViews = platforms.reduce((s, p) => s + (p.totalViews ?? 0), 0);
   const updated = formatUpdatedAt(data.updatedAt);
   const brands = data.workedWith ?? [];
   const topPosts = data.topPosts ?? [];
@@ -46,9 +39,9 @@ export function MediaKit({ data }: { data: MediaKitData }) {
           lastName={data.name.last}
           bio={data.bio}
           combinedAudience={data.combinedAudience}
-          platformCount={platforms.length}
-          totalViews={totalViews}
-          avgEngagement={er}
+          views30d={data.views30d}
+          avgEngagement30d={data.avgEngagement30d}
+          audienceGrowth30dPct={data.audienceGrowth30dPct}
         />
 
         <MediaKitPlatforms platforms={platforms} />
