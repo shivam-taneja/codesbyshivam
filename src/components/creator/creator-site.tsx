@@ -170,10 +170,10 @@ export function CreatorSite({
             <div className="intro-description">
               <p>
                 Hey, I’m Shivam Taneja. Codes by Shivam is my social media and
-                content creator brand for developer content, AI tools, building,
-                and tech. I post as @codesbyshivam on X, YouTube, and Instagram:
-                hands-on tool demos, build in public updates, developer stories,
-                and a little humour.
+                content creator brand. I post as @codesbyshivam on X, YouTube,
+                and Instagram, with content about AI tools, building, and tech:
+                hands-on tool demos, build in public updates, and a little
+                humour.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
                 <TrackedAnchor
@@ -241,8 +241,8 @@ export function CreatorSite({
             <div>
               <p>
                 I’m an engineer behind the camera, making tech feel a little
-                more human. I share hands-on tool demos, developer stories, and
-                the occasional joke that hits too close to home.
+                more human. I share hands-on tool demos, stories about building,
+                and the occasional joke that hits too close to home.
               </p>
             </div>
           </div>

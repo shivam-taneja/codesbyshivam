@@ -9,25 +9,17 @@ export function creatorPerson(stats?: ProfileStats) {
   const person: Record<string, unknown> = {
     "@type": "Person",
     name: siteConfig.author,
-    alternateName: siteConfig.handle,
+    alternateName: [siteConfig.brandName, siteConfig.handle],
     url: siteConfig.url,
     image: `${siteConfig.url}/logo.png`,
-    jobTitle: "Developer Content Creator",
     description: siteConfig.description,
     knowsAbout: [
       "Software engineering",
       "AI tools",
-      "Developer content",
+      "Tech content",
       "Build in public",
     ],
-    sameAs: [
-      siteConfig.links.linkedin,
-      siteConfig.links.instagram,
-      siteConfig.links.youtube,
-      siteConfig.links.facebook,
-      siteConfig.links.threads,
-      siteConfig.links.portfolio,
-    ],
+    sameAs: [...siteConfig.sameAs],
   };
 
   if (stats?.combinedAudience && stats.combinedAudience > 0) {
