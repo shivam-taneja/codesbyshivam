@@ -5,7 +5,7 @@ const ogImage = {
   url: "/og-image.jpg",
   width: 1200,
   height: 640,
-  alt: "codesbyshivam, Shivam Taneja, developer content creator",
+  alt: "Codes by Shivam (codesbyshivam), Shivam Taneja, content creator",
 } as const;
 
 type PageSeoInput = {
@@ -79,12 +79,12 @@ export const rootMetadata: Metadata = {
   publisher: siteConfig.author,
   keywords: [
     "codesbyshivam",
+    "Codes by Shivam",
     "Shivam Taneja",
-    "developer content creator",
+    "content creator",
     "AI tools",
     "build in public",
     "tech YouTuber",
-    "developer Instagram",
     "brand partnerships",
   ],
   category: "technology",

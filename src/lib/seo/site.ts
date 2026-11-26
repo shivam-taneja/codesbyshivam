@@ -1,8 +1,9 @@
 export const siteConfig = {
   name: "codesbyshivam",
-  title: "codesbyshivam | Shivam Taneja, Developer Content Creator",
+  brandName: "Codes by Shivam",
+  title: "Codes by Shivam (codesbyshivam) | Shivam Taneja, Content Creator",
   description:
-    "codesbyshivam is Shivam Taneja. Honest, hands-on developer content: AI tools, building, and tech, shared on socials, with a media kit for brand collaborations.",
+    "codesbyshivam is Shivam Taneja. Honest, hands-on content about AI tools, building, and tech, shared on socials, with a media kit for brand collaborations.",
   url: "https://www.codesbyshivam.com",
   author: "Shivam Taneja",
   handle: "codesbyshivam",
@@ -17,4 +18,13 @@ export const siteConfig = {
     facebook: "https://www.facebook.com/codesbyshivam",
     threads: "https://www.threads.net/@codesbyshivam",
   },
+  sameAs: [
+    "https://www.instagram.com/codesbyshivam/",
+    "https://www.youtube.com/@codesbyshivam",
+    "https://x.com/codesbyshivam",
+    "https://www.threads.net/@codesbyshivam",
+    "https://www.facebook.com/people/Shivam-Taneja/100010113163950/",
+    "https://www.linkedin.com/in/shivam-taneja/",
+    "https://www.shivamtaneja.com",
+  ],
 } as const;
