@@ -23,31 +23,7 @@ export function MediaKitBrands({
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {brands.map((b) => (
           <div key={b.name} className="rounded-sm border border-border p-4">
-            {b.website ? (
-              <TrackedAnchor
-                href={b.website}
-                target="_blank"
-                rel="noreferrer"
-                className="font-display text-[22px] leading-tight transition hover:opacity-70"
-                event="mediaKitLinkClicked"
-                eventProps={{
-                  label: b.name,
-                  type: "brand",
-                  url: b.website,
-                }}
-              >
-                {b.name}
-              </TrackedAnchor>
-            ) : (
-              <div className="font-display text-[22px] leading-tight">
-                {b.name}
-              </div>
-            )}
-            {b.category ? (
-              <div className="mt-1.5 font-mono text-xs text-muted-foreground">
-                {b.category}
-              </div>
-            ) : null}
+            <div className="font-display text-[22px] leading-tight">{b.name}</div>
             {b.deliverables.length > 0 ? (
               <ul className="mt-3 space-y-1.5">
                 {b.deliverables.map((d, i) => {

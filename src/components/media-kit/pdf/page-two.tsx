@@ -107,27 +107,7 @@ export function MediaKitPdfPageTwo({
           <View style={styles.brands}>
             {brands.map((b) => (
               <View key={b.name} style={styles.brand} wrap={false}>
-                {b.website ? (
-                  <Link
-                    src={b.website}
-                    style={[
-                      styles.brandName,
-                      {
-                        color: pdfColors.foreground,
-                        textDecoration: "none",
-                      },
-                    ]}
-                  >
-                    {pdfSafeText(b.name)}
-                  </Link>
-                ) : (
-                  <Text style={styles.brandName}>{pdfSafeText(b.name)}</Text>
-                )}
-                {b.category ? (
-                  <Text style={styles.brandCategory}>
-                    {pdfSafeText(b.category)}
-                  </Text>
-                ) : null}
+                <Text style={styles.brandName}>{pdfSafeText(b.name)}</Text>
                 {b.deliverables.map((d, i) => {
                   const label = [
                     [d.platform, d.type].filter(Boolean).join(" "),

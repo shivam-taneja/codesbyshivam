@@ -432,6 +432,10 @@ a.video-item:hover img {
   aspect-ratio: 4 / 3;
 }
 
+.content-facebook .video-image {
+  aspect-ratio: 9 / 16;
+}
+
 .content-grid .video-image img {
   object-position: center;
 }
@@ -468,7 +472,8 @@ a.video-item:hover img {
   gap: 12px;
 }
 
-.linkedin-mark {
+.linkedin-mark,
+.facebook-mark {
   display: inline-flex;
   height: 28px;
   width: 28px;
@@ -476,13 +481,22 @@ a.video-item:hover img {
   align-items: center;
   justify-content: center;
   border-radius: 4px;
-  background: #0a66c2;
   font-family: var(--font-sans);
   font-size: 13px;
   font-weight: 700;
   letter-spacing: -0.04em;
   line-height: 1;
   color: #fff;
+}
+
+.linkedin-mark {
+  background: #0a66c2;
+}
+
+.facebook-mark {
+  background: #1877f2;
+  font-size: 18px;
+  text-transform: lowercase;
 }
 
 .linkedin-preview-title {

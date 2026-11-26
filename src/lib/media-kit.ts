@@ -1,3 +1,7 @@
+import { formatInTimeZone } from "date-fns-tz";
+
+const INDIA_TZ = "Asia/Kolkata";
+
 export type PlatformStats = {
   id: string;
   name: string;
@@ -20,14 +24,13 @@ export type BrandDeliverable = {
   engagementRate?: number;
 };
 
+/** Brand selected by best video views; `deliverables` is everything shipped for them. */
 export type Brand = {
   name: string;
-  website?: string;
-  category?: string;
   deliverables: BrandDeliverable[];
 };
 
-/** How many brands to surface on the media kit UI + PDF. */
+/** How many brands to surface — picked by best cross-platform video views. */
 export const MEDIA_KIT_BRAND_LIMIT = 3;
 
 export type TopPost = {
@@ -97,10 +100,15 @@ export function avgEngagement(platforms: PlatformStats[]) {
   return ers.length ? ers.reduce((a, b) => a + b, 0) / ers.length : undefined;
 }
 
-export function formatMonth(iso: string) {
-  return new Date(iso).toLocaleDateString("en-US", {
-    month: "short",
-    year: "numeric",
-    timeZone: "UTC",
-  });
+/** Display stamp from metrics `synced_at` — date + time in IST. */
+export function formatUpdatedAt(iso: string) {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return iso;
+  return formatInTimeZone(date, INDIA_TZ, "d MMM yyyy, h:mm a 'IST'");
+}
+
+export function updatedAtYear(iso: string) {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return new Date().getFullYear();
+  return Number(formatInTimeZone(date, INDIA_TZ, "yyyy"));
 }

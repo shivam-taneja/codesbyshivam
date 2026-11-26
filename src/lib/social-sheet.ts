@@ -77,6 +77,7 @@ function normalizePlatform(raw: string): ContentPlatform | null {
   if (value === "instagram") return "Instagram";
   if (value === "youtube") return "YouTube";
   if (value === "linkedin") return "LinkedIn";
+  if (value === "facebook" || value === "fb") return "Facebook";
   return null;
 }
 
@@ -122,89 +123,89 @@ function titleCasePlatform(raw: string) {
   return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
-function firstNonEmpty(
-  rows: Record<string, string>[],
-  key: string,
-): string | undefined {
-  for (const row of rows) {
-    const value = (row[key] || "").trim();
-    if (value) return value;
-  }
-  return undefined;
+const BRAND_VIDEO_PLATFORMS = new Set([
+  "instagram",
+  "youtube",
+  "facebook",
+  "linkedin",
+]);
+
+/** Video types used to pick which brands make the cut. */
+function isVideoDeliverable(type: string) {
+  const value = type.trim().toLowerCase();
+  return value === "reel" || value === "short" || value === "video";
 }
 
-function brandScaleScore(rows: Record<string, string>[]) {
-  return (
-    (parseNumber(firstNonEmpty(rows, "app_downloads")) ?? 0) +
-    (parseNumber(firstNonEmpty(rows, "brand_instagram_followers")) ?? 0) +
-    (parseNumber(firstNonEmpty(rows, "brand_linkedin_followers")) ?? 0) +
-    (parseNumber(firstNonEmpty(rows, "brand_facebook_followers")) ?? 0) +
-    (parseNumber(firstNonEmpty(rows, "brand_x_followers")) ?? 0) +
-    (parseNumber(firstNonEmpty(rows, "brand_youtube_subscribers")) ?? 0)
-  );
+function deliverableFromRow(
+  row: Record<string, string>,
+): BrandDeliverable | null {
+  const platform = titleCasePlatform(row.platform || "");
+  const type = (row.deliverable_type || "").trim();
+  const url =
+    (row.canonical_url || "").trim() || (row.link || "").trim() || undefined;
+  if (!platform && !type && !url) return null;
+  return {
+    platform: platform || "Post",
+    type,
+    url,
+    views: parseNumber(row.views) ?? undefined,
+    engagementRate: parseNumber(row.engagement_rate_pct) ?? undefined,
+  };
 }
 
+function sortDeliverables(a: BrandDeliverable, b: BrandDeliverable) {
+  const viewsDelta = (b.views ?? 0) - (a.views ?? 0);
+  if (viewsDelta !== 0) return viewsDelta;
+  return (b.engagementRate ?? 0) - (a.engagementRate ?? 0);
+}
+
+/**
+ * 1. Rank brands by their single best video views across IG / YT / FB / LinkedIn.
+ * 2. Take the top brands, then show every deliverable made for them.
+ */
 function parseBrands(csv: string): Brand[] {
-  const rows = csvToObjects(csv);
-  const byBrand = new Map<string, Record<string, string>[]>();
+  const byBrand = new Map<
+    string,
+    { deliverables: BrandDeliverable[]; bestVideoViews: number }
+  >();
 
-  for (const row of rows) {
+  for (const row of csvToObjects(csv)) {
     const name = (row.brand || "").trim();
     if (!name) continue;
-    const list = byBrand.get(name) ?? [];
-    list.push(row);
-    byBrand.set(name, list);
+    const deliverable = deliverableFromRow(row);
+    if (!deliverable) continue;
+
+    const entry = byBrand.get(name) ?? {
+      deliverables: [],
+      bestVideoViews: 0,
+    };
+    entry.deliverables.push(deliverable);
+
+    const platformId = (row.platform || "").trim().toLowerCase();
+    if (
+      BRAND_VIDEO_PLATFORMS.has(platformId) &&
+      isVideoDeliverable(deliverable.type)
+    ) {
+      entry.bestVideoViews = Math.max(
+        entry.bestVideoViews,
+        deliverable.views ?? 0,
+      );
+    }
+
+    byBrand.set(name, entry);
   }
 
-  const ranked = [...byBrand.entries()].map(([name, brandRows]) => {
-    const deliverables: BrandDeliverable[] = brandRows
-      .map((row) => {
-        const platform = titleCasePlatform(row.platform || "");
-        const type = (row.deliverable_type || "").trim();
-        const url =
-          (row.canonical_url || "").trim() ||
-          (row.link || "").trim() ||
-          undefined;
-        if (!platform && !type && !url) return null;
-        return {
-          platform: platform || "Post",
-          type,
-          url,
-          views: parseNumber(row.views) ?? undefined,
-          engagementRate: parseNumber(row.engagement_rate_pct) ?? undefined,
-        };
-      })
-      .filter(Boolean)
-      .sort((a, b) => {
-        const viewsDelta = (b!.views ?? 0) - (a!.views ?? 0);
-        if (viewsDelta !== 0) return viewsDelta;
-        return (b!.engagementRate ?? 0) - (a!.engagementRate ?? 0);
-      }) as BrandDeliverable[];
-
-    const viralityScore = deliverables.reduce(
-      (max, d) => Math.max(max, d.views ?? 0),
-      0,
-    );
-
-    return {
-      brand: {
-        name,
-        website: firstNonEmpty(brandRows, "brand_website"),
-        category: firstNonEmpty(brandRows, "brand_category"),
-        deliverables,
-      } satisfies Brand,
-      scaleScore: brandScaleScore(brandRows),
-      viralityScore,
-    };
-  });
-
-  return ranked
-    .sort((a, b) => {
-      if (b.viralityScore !== a.viralityScore) return b.viralityScore - a.viralityScore;
-      return b.scaleScore - a.scaleScore;
-    })
+  return [...byBrand.entries()]
+    .filter(([, entry]) => entry.bestVideoViews > 0)
+    .sort((a, b) => b[1].bestVideoViews - a[1].bestVideoViews)
     .slice(0, MEDIA_KIT_BRAND_LIMIT)
-    .map((entry) => entry.brand);
+    .map(
+      ([name, entry]) =>
+        ({
+          name,
+          deliverables: [...entry.deliverables].sort(sortDeliverables),
+        }) satisfies Brand,
+    );
 }
 
 export async function getSelectedContent(): Promise<SelectedContentItem[]> {

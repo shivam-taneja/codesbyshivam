@@ -10,7 +10,7 @@ import {
 } from "@/components/analytics/tracked-link";
 import {
   compact,
-  formatMonth,
+  formatUpdatedAt,
   headlineFor,
   type MediaKitData,
 } from "@/lib/media-kit";
@@ -262,7 +262,7 @@ export function CreatorSite({
             </div>
             <div className="audience-note">
               <span className="eyebrow">
-                UPDATED {formatMonth(data.updatedAt)}
+                UPDATED {formatUpdatedAt(data.updatedAt)}
               </span>
               <p>
                 Snapshot from my socials page.

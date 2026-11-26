@@ -251,12 +251,6 @@ export const pdfStyles = StyleSheet.create({
     color: pdfColors.foreground,
     textDecoration: "none",
   },
-  brandCategory: {
-    fontFamily: "JetBrainsMono",
-    fontSize: 7,
-    color: pdfColors.muted,
-    marginTop: 2,
-  },
   brandDeliverable: {
     fontFamily: "JetBrainsMono",
     fontSize: 7.5,

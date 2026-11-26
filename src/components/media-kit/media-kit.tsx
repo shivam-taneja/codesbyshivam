@@ -1,4 +1,9 @@
-import { avgEngagement, formatMonth, type MediaKitData } from "@/lib/media-kit";
+import {
+  avgEngagement,
+  formatUpdatedAt,
+  updatedAtYear,
+  type MediaKitData,
+} from "@/lib/media-kit";
 import { MediaKitBrands } from "./brands";
 import { MediaKitFooter } from "./footer";
 import { MediaKitFormats } from "./formats";
@@ -13,7 +18,7 @@ export function MediaKit({ data }: { data: MediaKitData }) {
   const platforms = data.platforms.filter((p) => p.show !== false);
   const er = avgEngagement(platforms);
   const totalViews = platforms.reduce((s, p) => s + (p.totalViews ?? 0), 0);
-  const updated = formatMonth(data.updatedAt);
+  const updated = formatUpdatedAt(data.updatedAt);
   const brands = data.workedWith ?? [];
   const topPosts = data.topPosts ?? [];
   const hasPosts = topPosts.length > 0;
@@ -30,7 +35,7 @@ export function MediaKit({ data }: { data: MediaKitData }) {
 
       <article className="media-kit-sheet sheet mx-auto flex flex-col px-6 py-8 sm:px-10 sm:py-11 md:px-12 md:py-12">
         <MediaKitHeader
-          year={new Date(data.updatedAt).getUTCFullYear()}
+          year={updatedAtYear(data.updatedAt)}
           location={data.location}
           updated={updated}
         />

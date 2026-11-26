@@ -7,19 +7,23 @@ import { Button } from "@/components/ui/button";
 import { track } from "@/lib/analytics";
 import {
   contentPlatforms,
+  contentPlatformUrls,
   type ContentPlatform,
   type SelectedContentItem,
 } from "@/lib/content-types";
 
+function isRemoteCdn(src: string) {
+  return (
+    src.includes("cdninstagram.com") ||
+    src.includes("fbcdn.net") ||
+    src.includes("facebook.com")
+  );
+}
+
 export function SelectedContent({ items }: { items: SelectedContentItem[] }) {
   const [platform, setPlatform] = useState<ContentPlatform>("Instagram");
   const filtered = items.filter((item) => item.platform === platform);
-  const platformUrl =
-    platform === "Instagram"
-      ? "https://www.instagram.com/codesbyshivam/"
-      : platform === "YouTube"
-        ? "https://www.youtube.com/@codesbyshivam"
-        : "https://www.linkedin.com/in/shivam-taneja/";
+  const platformUrl = contentPlatformUrls[platform];
 
   return (
     <>
@@ -87,7 +91,8 @@ export function SelectedContent({ items }: { items: SelectedContentItem[] }) {
                       fill
                       sizes="(max-width: 767px) 100vw, 33vw"
                       className="object-cover"
-                      unoptimized={item.image.includes("cdninstagram.com")}
+                      unoptimized={isRemoteCdn(item.image)}
+                      priority={i === 0}
                     />
                   </div>
                 ) : (
@@ -96,8 +101,15 @@ export function SelectedContent({ items }: { items: SelectedContentItem[] }) {
                       <span className="eyebrow">
                         SHIVAM TANEJA / {item.platform.toUpperCase()}
                       </span>
-                      <span className="linkedin-mark" aria-hidden="true">
-                        in
+                      <span
+                        className={
+                          item.platform === "Facebook"
+                            ? "facebook-mark"
+                            : "linkedin-mark"
+                        }
+                        aria-hidden="true"
+                      >
+                        {item.platform === "Facebook" ? "f" : "in"}
                       </span>
                     </div>
                     <p className="linkedin-preview-title">{item.title}</p>

@@ -1,4 +1,8 @@
-export type ContentPlatform = "Instagram" | "YouTube" | "LinkedIn";
+export type ContentPlatform =
+  | "Instagram"
+  | "YouTube"
+  | "LinkedIn"
+  | "Facebook";
 
 export type SelectedContentItem = {
   title: string;
@@ -16,4 +20,12 @@ export const contentPlatforms: ContentPlatform[] = [
   "Instagram",
   "YouTube",
   "LinkedIn",
+  "Facebook",
 ];
+
+export const contentPlatformUrls: Record<ContentPlatform, string> = {
+  Instagram: "https://www.instagram.com/codesbyshivam/",
+  YouTube: "https://www.youtube.com/@codesbyshivam",
+  LinkedIn: "https://www.linkedin.com/in/shivam-taneja/",
+  Facebook: "https://www.facebook.com/people/Shivam-Taneja/100010113163950/",
+};
